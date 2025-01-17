@@ -1,6 +1,6 @@
-const { Server } = require("socket.io");
-const http = require("http");
-const express = require("express");
+import { Server } from "socket.io";
+import http from "http";
+import express from "express";
 
 const app = express();
 
@@ -14,6 +14,7 @@ const io = new Server(server, {
 
 // connected users
 let connected_users = {};
+// ! FRONTEND - (video:- 4:04:00) - exact point (4:07.00)
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
@@ -30,6 +31,6 @@ io.on("connection", (socket) => {
 });
 
 // get connected users
-const get_connected_users = () => connected_users;
+export const get_connected_users = () => connected_users;
 
-module.exports = { app, io, server, get_connected_users };
+export { app, io, server };

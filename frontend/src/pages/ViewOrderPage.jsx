@@ -4,7 +4,8 @@ import { useGeneralHooks, usePageHooks } from "../Hooks/useGeneralHooks";
 import { Link, useParams } from "react-router-dom";
 import { useProductStore } from "../Hooks/useProductStore";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
-import { Container, Loader, Store } from "lucide-react";
+import { Container, Copy, Loader, Store } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ViewOrderPage = () => {
   const { setCurrentPage } = usePageHooks();
@@ -119,8 +120,16 @@ const OrderSummary = ({ order, formatDate, formatAmount }) => {
   return (
     <div className="w-full rounded-sm bg-gray-100 p-4">
       {/* Order ID */}
-      <div className="text-md mb-2 font-semibold">
-        Order ID<sup>o</sup> {order.orderId}
+      <div className="text-md mb-2 font-semibold flex gap-3">
+        <div>Order ID<sup>o</sup> {order.orderId}</div>
+        <button 
+  onClick={() =>  {
+    navigator.clipboard.writeText(order.orderId);
+    toast('Order ID copied');
+  }}
+>
+  <Copy size={16} />
+</button>
       </div>
 
       {/* status */}
@@ -251,6 +260,10 @@ const DeliveryDetails = ({ order }) => {
       <div className="mb-2 border-b border-gray-200 pb-2">
         <div className="text-md font-semibold">Contact Details</div>
         <div className="text-sm text-gray-600">
+          Customer Name: {order.customerName}
+        </div>
+
+        <div className="text-sm text-gray-600">
           Contact Phone: {order.customerPhone}
         </div>
 
@@ -260,6 +273,14 @@ const DeliveryDetails = ({ order }) => {
           </div>
         )}
       </div>
+
+      {/* Addition details */}
+      {order.shortNote && <div className="mb-2 border-b border-gray-200 pb-2">
+        <div className="text-md font-semibold">Additional Details</div>
+        <div className="text-sm text-gray-600">
+          {order.shortNote}
+        </div>
+      </div>}
     </div>
   );
 };

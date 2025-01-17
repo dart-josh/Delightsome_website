@@ -7,7 +7,7 @@ const AboutPage = () => {
 
   useEffect(() => {
     setCurrentPage("About Us");
-    // window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [setCurrentPage]);
 
   return (

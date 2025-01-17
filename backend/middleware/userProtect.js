@@ -1,16 +1,15 @@
+const admin_verification = async (req, res, next) => {
+  const { user } = req.body;
 
-export const admin_verification = async (req, res, next) => {
+  if (!user) {
+    return res.status(500).json({ message: "UnAuthorized" });
+  }
 
-    const {user} = req.body;
+  if (user == "bola") {
+    req.body.isAllowed = true;
+  }
 
-    if (!user) {
-        return res.status(500).json({message: "UnAuthorized"})
-    }
+  next();
+};
 
-    if (user == 'bola') {
-        req.body.isAllowed = true;
-    }
-
-    
-    next();
-}
+module.exports = { admin_verification };

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const salesSchema = new mongoose.Schema(
   {
@@ -87,4 +87,4 @@ const salesSchema = new mongoose.Schema(
 
 const SalesRecord = mongoose.model("SalesRecord", salesSchema);
 
-module.exports = SalesRecord;
+export default SalesRecord;

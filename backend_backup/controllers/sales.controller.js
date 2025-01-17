@@ -1,7 +1,7 @@
-const { nanoid } = require("nanoid");
-const SalesRecord = require("../models/sales.model.js");
+import { nanoid } from "nanoid";
+import SalesRecord from "../models/sales.model.js";
 
-const save_order = async (req, res) => {
+export const save_order = async (req, res) => {
   // get values from body
   const {
     products,
@@ -58,6 +58,7 @@ const save_order = async (req, res) => {
   );
   
   try {
+    
     const order = await SalesRecord.create({
       recordDate,
       orderId,
@@ -84,12 +85,16 @@ const save_order = async (req, res) => {
   }
 };
 
-const view_order = async (req, res) => {
-  const { id: orderId } = req.params;
+export const view_order = async (req, res) => {
+    const { id:orderId } = req.params;
+
+    
 
   if (!orderId) {
     return res.status(500).json({ message: "Invalid Entry" });
   }
+
+  
 
   try {
     const order = await SalesRecord.findOne({ orderId });
@@ -97,6 +102,8 @@ const view_order = async (req, res) => {
     if (!order) {
       return res.status(500).json({ message: "Invalid Order Id" });
     }
+
+    
 
     res.json({ order });
   } catch (error) {
@@ -107,8 +114,8 @@ const view_order = async (req, res) => {
   }
 };
 
-const mark_payment = async (req, res) => {
-  const { id: orderId } = req.params;
+export const mark_payment = async (req, res) => {
+  const { id:orderId } = req.params;
 
   if (!orderId) {
     return res.status(500).json({ message: "Invalid Entry" });
@@ -121,13 +128,14 @@ const mark_payment = async (req, res) => {
       return res.status(500).json({ message: "Invalid Order Id" });
     }
 
-    const response = await SalesRecord.findOneAndUpdate({ orderId }, { paymentStatus: 'Awaiting Confirmation', paymentMethod: 'Bank Transfer' });
+    const response = await SalesRecord.findOneAndUpdate({ orderId }, {paymentStatus: 'Awaiting Confirmation', paymentMethod: 'Bank Transfer'});
     
     if (!response) {
       return res.status(500).json({ message: "Error marking payment" });
     }
 
     res.json({ message: "Payment Sent" });
+
   } catch (error) {
     console.log("Error in mark_payment: ", error.message);
     res
@@ -136,7 +144,7 @@ const mark_payment = async (req, res) => {
   }
 };
 
-const get_orders = async (req, res) => {
+export const get_orders = async (req, res) => {
   try {
     const record = await SalesRecord.find({});
     res.json({ record });
@@ -149,14 +157,6 @@ const get_orders = async (req, res) => {
 };
 
 // generate record Id
-const generate_record_id = () => {
+export const generate_record_id = () => {
   return "" + nanoid(11);
-};
-
-module.exports = {
-  save_order,
-  view_order,
-  mark_payment,
-  get_orders,
-  generate_record_id,
 };
