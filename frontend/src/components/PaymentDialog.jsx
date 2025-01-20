@@ -67,6 +67,10 @@ const PaymentDialog = () => {
                   <div className="font-semibold">Account No:</div>
                   <div className="text-lg font-bold">1234567890</div>
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="font-semibold">Account Name:</div>
+                  <div className="text-lg font-bold">Delightsome Juice, Smoothies</div>
+                </div>
               </div>
 
               <div className="flex flex-col items-center font-semibold">

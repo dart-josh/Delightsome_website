@@ -541,7 +541,10 @@ const OnlineShopping = () => {
 
 const UserArea = () => {
   return (
-    <Link to={'/sign-in'} className="flex cursor-pointer items-center gap-2 text-black">
+    <Link
+      to={"/sign-in"}
+      className="flex cursor-pointer items-center gap-2 text-black"
+    >
       <User2 strokeWidth={0} className="fill-green-700" size={32} />
 
       <div className="flex flex-col gap-2 leading-none">
@@ -611,10 +614,8 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
   const increaseItemQty = (itemId) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item) {
-      if (item.qty < 5) {
-        item.qty += 1;
-        updateCart(item);
-      }
+      item.qty += 1;
+      updateCart(item);
     }
   };
 

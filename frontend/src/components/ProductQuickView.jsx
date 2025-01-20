@@ -90,7 +90,7 @@ const ProductQuickView = () => {
       image: quickViewProduct.images[0],
       id: quickViewProduct.id,
       qty: item_qty,
-      link: quickViewProduct.link
+      link: quickViewProduct.link,
     };
 
     updateCart(cartP);
@@ -98,9 +98,7 @@ const ProductQuickView = () => {
 
   // increaae quantity
   const increaseItemQty = () => {
-    if (itemQty < 5) {
-      setItemQty(itemQty + 1);
-    }
+    setItemQty(itemQty + 1);
   };
 
   // decreaae quantity
@@ -298,7 +296,6 @@ const ProductQuickView = () => {
         </div>
       </div>
       {/*  */}
-      
     </div>
   );
 };

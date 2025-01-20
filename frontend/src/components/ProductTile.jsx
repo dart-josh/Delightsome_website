@@ -92,7 +92,7 @@ const Image = ({ product, additional_box_class, addtional_img_class }) => {
         <img
           src={product.images && product.images[0]}
           alt={product.name}
-          className={`w-full ${addtional_img_class} ${product.images[0] == '/products/' ? 'h-[200px]' : ''}`}
+          className={`w-full ${addtional_img_class} ${product.images[0] == "/products/" ? "h-[200px]" : ""}`}
         />
       </Link>
       {/* Bottom hover */}
@@ -108,7 +108,7 @@ const Image = ({ product, additional_box_class, addtional_img_class }) => {
           <span>Wishlist</span>
         </div>
         <div
-          onClick={() => toggleProductQuickView({value: true, product})}
+          onClick={() => toggleProductQuickView({ value: true, product })}
           className="flex cursor-pointer flex-col items-center text-[13px]"
         >
           <Eye size={20} />
@@ -130,7 +130,7 @@ const Image = ({ product, additional_box_class, addtional_img_class }) => {
       {/* Quickview button for smaller device */}
       <div className="absolute bottom-2 right-2 flex md:hidden">
         <Eye
-          onClick={() => toggleProductQuickView({value: true, product})}
+          onClick={() => toggleProductQuickView({ value: true, product })}
           size={22}
           className={"cursor-pointer"}
         />
@@ -172,16 +172,14 @@ const AddToCartButton = ({ product }) => {
       image: product.images[0],
       id: product.id,
       qty: item_qty,
-      link: product.link
+      link: product.link,
     };
 
     updateCart(cartP);
   };
 
   const increaseItemQty = () => {
-    if (itemQty < 5) {
-      setItemQty(itemQty + 1);
-    }
+    setItemQty(itemQty + 1);
   };
 
   const decreaseItemQty = () => {

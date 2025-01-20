@@ -23,7 +23,7 @@ import { useProductStore } from "../Hooks/useProductStore";
 import toast from "react-hot-toast";
 
 const ProductPage = () => {
-  const { id:link } = useParams();
+  const { id: link } = useParams();
 
   const {
     productList,
@@ -45,7 +45,7 @@ const ProductPage = () => {
     });
 
     setProduct(p[0]);
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [productList, link]);
 
   const { setCurrentPage: setPage } = usePageHooks();
@@ -91,7 +91,7 @@ const ProductPage = () => {
       image: product.images[0],
       id: product.id,
       qty: item_qty,
-      link: product.link
+      link: product.link,
     };
 
     updateCart(cartP);
@@ -99,9 +99,7 @@ const ProductPage = () => {
 
   // increaae quantity
   const increaseItemQty = () => {
-    if (itemQty < 5) {
-      setItemQty(itemQty + 1);
-    }
+    setItemQty(itemQty + 1);
   };
 
   // decreaae quantity
@@ -135,7 +133,7 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="xs:mx-5 relative mx-[10px] max-w-[1200px] pt-5 justify-center md:mx-auto md:px-5">
+    <div className="xs:mx-5 relative mx-[10px] max-w-[1200px] justify-center pt-5 md:mx-auto md:px-5">
       {/* Top bar */}
       <div className="hidden md:block">
         <div className="text-md mb-6 flex justify-between">
@@ -280,8 +278,8 @@ const ProductPage = () => {
                       !isAddedToCart
                         ? () => addToCart(itemQty)
                         : () => {
-                          removeFromCart(product.id)
-                        }
+                            removeFromCart(product.id);
+                          }
                     }
                     className={`flex h-12 w-full items-center justify-center gap-3 rounded-md px-4 py-2 text-xl text-white transition-all duration-500 ${!isAddedToCart ? "bg-green-700 hover:bg-green-800" : "bg-red-500 hover:bg-red-700"}`}
                   >
@@ -401,7 +399,10 @@ const ProductPage = () => {
           </div>
 
           {/* Related products */}
-        <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} product={product} />  
+          <RelatedProducts
+            additionalClasses={"max-w-full lg:w-[300px]"}
+            product={product}
+          />
         </div>
       </div>
     </div>
