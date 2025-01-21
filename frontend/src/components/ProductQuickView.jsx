@@ -18,6 +18,7 @@ import { useProductHooks } from "../Hooks/useGeneralHooks";
 
 import ProductRatings from "./ProductRatings";
 import { useProductStore } from "../Hooks/useProductStore";
+import { useNavigate } from "react-router-dom";
 
 const ProductQuickView = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -25,6 +26,8 @@ const ProductQuickView = () => {
   const { toggleProductQuickView, productQuickViewOpen, quickViewProduct } =
     useProductHooks();
   const [isOpen, setIsOpen] = useState(productQuickViewOpen);
+
+  const navigate = useNavigate();
 
   const {
     likedProducts,
@@ -49,6 +52,11 @@ const ProductQuickView = () => {
     await delay(500);
     toggleProductQuickView({ value: false });
   };
+
+  const view_more = async (product) => {
+    closeSideBar();
+    navigate(`/product/${product.link}`);
+  }
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -208,6 +216,9 @@ const ProductQuickView = () => {
                 <p className="w-full max-w-[600px] text-[15px]">
                   {quickViewProduct.shortDescription}
                 </p>
+                
+                {/* view more */}
+                <div className="text-sm hover:underline text-green-700 transition duration-300 hover:text-green-900 cursor-pointer" onClick={() => {view_more(quickViewProduct)}}>View more</div>
 
                 {/* Item quantity */}
                 <div className="mt-3 flex h-11 w-full max-w-[150px] items-center rounded-xl border border-gray-200 text-gray-700 md:mt-5">
