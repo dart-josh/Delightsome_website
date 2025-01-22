@@ -8,7 +8,7 @@ const Page404 = () => {
   useEffect(() => {
     setCurrentPage("Page not found");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [setCurrentPage]);
+  }, [setCurrentPage]); 
 
   return (
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">

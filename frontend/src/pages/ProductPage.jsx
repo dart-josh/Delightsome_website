@@ -225,7 +225,7 @@ const ProductPage = () => {
                           key={thumbnail}
                           src={thumbnail}
                           alt={index}
-                          className={`h-[85px] w-[85px] cursor-pointer transition-all duration-300 hover:opacity-100 ${isActive ? "opacity-100" : "opacity-50"}`}
+                          className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "opacity-100 cursor-not-allowed" : "cursor-pointer opacity-50"}`}
                         />
                       );
                     })}
@@ -1507,28 +1507,51 @@ function GB() {
   );
 }
 
-function ZommImg() {
-  // new
+const ImagePreview = ({ src, alt, width, height, zoomScale = 2 }) => {
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
-  // call the custom hook
-  // useMouseOverZoom(source, target); // new
+  const handleMouseMove = (e) => {
+    const { left, top} = e.target.getBoundingClientRect();
+    const x = e.clientX - left + 170;
+    const y = e.clientY - top + 120;
+
+    setCursorPosition({ x, y });
+  };
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
 
   return (
-    <div className="relative h-screen w-screen bg-gradient-to-tr from-indigo-200 to-indigo-50">
-      <div className="grid h-full grid-cols-12 gap-6">
-        <div className="relative col-span-12 flex items-center px-12 md:col-span-6 md:px-24">
-          {/* ...other contents */}
-        </div>
-        <div className="relative z-10 col-span-12 border-t-8 border-indigo-500 md:col-span-4 md:col-start-9 md:border-l-8 md:border-t-0">
-          <img
-            src={"/Tigernut-Relish-web.jpg"}
-            className="h-full w-full cursor-crosshair bg-gray-100 object-cover"
-          />
-          <canvas className="pointer-events-none absolute bottom-full left-1/2 z-10 h-32 w-32 -translate-x-1/2 translate-y-1/2 border-8 border-indigo-500 bg-gray-200 md:-left-16 md:bottom-16 md:translate-x-0 md:translate-y-0" />
-        </div>
-      </div>
+    <div
+      className="relative overflow-hidden inline-block"
+      style={{ width, height }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+    >
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover`}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+      {isHovered && (
+        <div
+          className="absolute border-[2px] pointer-events-none bg-no-repeat bg-center z-10 transition"
+          style={{
+            width: `150px`,
+            height: `150px`,
+            top: `${cursorPosition.y - height / (2 * zoomScale)}px`,
+            left: `${cursorPosition.x - width / (2 * zoomScale)}px`,
+            backgroundImage: `url(${src})`,
+            backgroundPosition: `-${cursorPosition.x * (zoomScale - 1)}px -${cursorPosition.y * (zoomScale - 1)}px`,
+            backgroundSize: `${width * zoomScale}px ${height * zoomScale}px`,
+          }}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default ProductPage;

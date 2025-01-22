@@ -61,15 +61,15 @@ const PaymentDialog = () => {
               <div className="">
                 <div className="flex items-center gap-2 font-semibold">
                   <div className="">Bank name:</div>
-                  <div className="text-[16px]">Guaranty Trust Bank</div>
+                  <div className="text-[16px]">Guaranty Trust Bank (GTB)</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">Account No:</div>
-                  <div className="text-lg font-bold">1234567890</div>
+                  <div className="text-lg font-bold">0235410851</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">Account Name:</div>
-                  <div className="text-lg font-bold">Delightsome Juice, Smoothies</div>
+                  <div className="text-lg font-bold">DHI/Fitness and wellness centre</div>
                 </div>
               </div>
 
