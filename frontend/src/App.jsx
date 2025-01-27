@@ -41,7 +41,6 @@ function App() {
       <MainHeader />
       
       <div className="relative z-40 mt-[60px] lg:mt-[200px] pb-[55px]">
-        
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
@@ -54,7 +53,6 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/view-order/:order_id" element={<ViewOrderPage />} />
           <Route path="/track-order" element={<TrackOrderPage />} />
-          
 
           <Route path="*" element={<Page404 />} />
         </Routes>

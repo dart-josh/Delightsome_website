@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
     "axios": "^1.7.7",
     "delightsome_website": "file:..",
     "framer-motion": "^11.5.2",
@@ -18,8 +19,9 @@
     "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.3.0",
     "react-router-dom": "^6.26.1",
-    "recharts": "^2.12.7",
+    "react-two-thumb-input-range": "^1.0.7",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
