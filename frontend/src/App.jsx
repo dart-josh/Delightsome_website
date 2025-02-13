@@ -20,6 +20,8 @@ import ContactPage from "./pages/ContactPage";
 import ViewOrderPage from "./pages/ViewOrderPage";
 import PaymentDialog from "./components/PaymentDialog";
 import TrackOrderPage from "./pages/TrackOrderPage";
+import ReviewPage from "./pages/ReviewPage";
+import DropReviewPage from "./pages/DropReviewPage";
 
 function App() {
   const { updateFeaturedProducts } = useProductStore();
@@ -53,6 +55,9 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/view-order/:order_id" element={<ViewOrderPage />} />
           <Route path="/track-order" element={<TrackOrderPage />} />
+          <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/drop-review" element={<DropReviewPage />} />
+
 
           <Route path="*" element={<Page404 />} />
         </Routes>

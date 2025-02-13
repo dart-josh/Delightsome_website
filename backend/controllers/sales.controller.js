@@ -1,5 +1,6 @@
 const { nanoid } = require("nanoid");
 const SalesRecord = require("../models/sales.model.js");
+const Review = require("../models/review.model.js");
 var nodemailer = require("nodemailer");
 
 const save_order = async (req, res) => {
@@ -208,6 +209,43 @@ const get_orders = async (req, res) => {
   }
 };
 
+const drop_review = async (req, res) => {
+  // get values from body
+  const {
+    products, reviewText, name
+  } = req.body;
+
+  // verify all fields
+  if (
+    !products ||
+    !reviewText
+  ) {
+    return res.status(500).json({ message: "Invalid Entry" });
+  }
+
+  // get date
+  const reviewTimestamp = new Date();
+
+  // convert date to local timezone
+  reviewTimestamp.setMinutes(
+    reviewTimestamp.getMinutes() - reviewTimestamp.getTimezoneOffset(),
+  );
+
+  try {
+    const review = await Review.create({
+      products, reviewText, name, reviewTimestamp,
+    });
+
+    res.json({ message: "Review Sent", review });
+
+  } catch (error) {
+    console.log("Error in drop_review: ", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal Server error", error: error.message });
+  }
+};
+
 // generate record Id
 const generate_record_id = () => {
   return "" + nanoid(11);
@@ -247,4 +285,5 @@ module.exports = {
   get_orders,
   generate_record_id,
   send_contact_mail,
+  drop_review,
 };

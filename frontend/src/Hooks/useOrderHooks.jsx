@@ -9,6 +9,18 @@ export const useOrderHooks = create((set, get) => ({
     { location: "Maryland", price: 3500 },
   ],
 
+  getReviews: async (product) => {
+    try {
+      const response = await axios.get(`/api/store/get_reviews/${product}`);
+      if (response.status == 200) return response.data.reviews;
+
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
+
   getOrderDetails: async (order_id) => {
     try {
       const response = await axios.get(`/api/store/view_order/${order_id}`);

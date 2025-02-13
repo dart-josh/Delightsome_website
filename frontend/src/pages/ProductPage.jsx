@@ -2,7 +2,7 @@
 import { Link, useParams } from "react-router-dom";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
 import {
-  Camera,
+  PenBox,
   Circle,
   CreditCard,
   Facebook,
@@ -14,14 +14,15 @@ import {
   Minus,
   Plus,
   ShoppingCart,
+  Star,
   Twitter,
-  Verified,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProductRatings from "../components/ProductRatings";
 import RelatedProducts from "../components/RelatedProducts";
 import { useProductStore } from "../Hooks/useProductStore";
 import toast from "react-hot-toast";
+import { useOrderHooks } from "../Hooks/useOrderHooks";
 
 const ProductPage = () => {
   const { id: link } = useParams();
@@ -54,6 +55,8 @@ const ProductPage = () => {
   const [itemQty, setItemQty] = useState(1);
 
   const [isLiked, setIsLiked] = useState(false);
+
+  const {getReviews} = useOrderHooks();
 
   // Like product effect
   useEffect(() => {
@@ -382,26 +385,22 @@ const ProductPage = () => {
 
               {/* Review options */}
               <div className="mt-6 flex flex-wrap items-center gap-5 border-b pb-6">
-                <button className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
-                  <Camera size={18} /> <span>With images ({0})</span>
-                </button>
+                <Link to={`/drop-review?product=${product.link}`} target="_blank" className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
+                  <PenBox size={18} /> <span>Leave a Review</span>
+                </Link>
 
-                <button className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
-                  <Verified size={18} /> <span>Verified ({0})</span>
-                </button>
-
-                <button className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
-                  <span>All Stars ({0})</span>
-                </button>
+                <Link to={`/drop-rating?product=${product.link}`} target="_blank" className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
+                  <Star size={18} /> <span>Rate this Product</span>
+                </Link>
               </div>
 
               {/* All reviews */}
               <div className="flex flex-col gap-5">
+                { getReviews && <div>
+                  {getReviews.map((review) => <div key={review._id}></div>)}
+                </div> ||
                 <p>There are no reviews yet.</p>
-                <p>
-                  Only logged in customers who have purchased this product may
-                  leave a review.
-                </p>
+}
               </div>
             </div>
 
