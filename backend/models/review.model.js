@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const reviewSchema = new mongoose.Schema({
     products: {
         type: String,
-        required: true
     },
     reviewText: {
         type: String,

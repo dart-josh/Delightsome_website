@@ -19,6 +19,7 @@ import { useProductHooks } from "../Hooks/useGeneralHooks";
 import ProductRatings from "./ProductRatings";
 import { useProductStore } from "../Hooks/useProductStore";
 import { useNavigate } from "react-router-dom";
+import { useOrderHooks } from "../Hooks/useOrderHooks";
 
 const ProductQuickView = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -56,7 +57,7 @@ const ProductQuickView = () => {
   const view_more = async (product) => {
     closeSideBar();
     navigate(`/product/${product.link}`);
-  }
+  };
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -120,6 +121,21 @@ const ProductQuickView = () => {
     }
   };
 
+  const { getReviews } = useOrderHooks();
+  const [reviews, setReviews] = useState([]);
+
+  const get_reviews = async (id) => {
+    const r = await getReviews(id);
+
+    setReviews(r);
+  };
+
+  // pgae title
+  useEffect(() => {
+    if (quickViewProduct)
+    get_reviews(quickViewProduct.name);
+  }, [quickViewProduct]);
+
   if (!quickViewProduct) {
     return <div></div>;
   }
@@ -158,7 +174,7 @@ const ProductQuickView = () => {
               <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
                 <ProductRatings rating={quickViewProduct.averageRating} />
                 <span className="text-[14px]">
-                  {quickViewProduct.reviewCount || 0} customer reviews
+                {reviews && reviews.length > 0 && reviews.length || 0} customer reviews
                 </span>
               </div>
 
@@ -216,9 +232,16 @@ const ProductQuickView = () => {
                 <p className="w-full max-w-[600px] text-[15px]">
                   {quickViewProduct.shortDescription}
                 </p>
-                
+
                 {/* view more */}
-                <div className="text-sm hover:underline text-green-700 transition duration-300 hover:text-green-900 cursor-pointer" onClick={() => {view_more(quickViewProduct)}}>View more</div>
+                <div
+                  className="cursor-pointer text-sm text-green-700 transition duration-300 hover:text-green-900 hover:underline"
+                  onClick={() => {
+                    view_more(quickViewProduct);
+                  }}
+                >
+                  View more
+                </div>
 
                 {/* Item quantity */}
                 <div className="mt-3 flex h-11 w-full max-w-[150px] items-center rounded-xl border border-gray-200 text-gray-700 md:mt-5">

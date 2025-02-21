@@ -95,17 +95,26 @@ const save_order = async (req, res) => {
       <p>Total Quantity: ${totalQuantity}</p>
       <h2>Products</h2>
       <ul>
-        ${products.map(product => `
+        ${products
+          .map(
+            (product) => `
           <li>
             <p>Name: ${product.name}</p>
             <p>Quantity: ${product.quantity}</p>
             <p>Price: ${product.price}</p>
           </li>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </ul>
     `;
 
-    send_email('order@delightsomejuice.com', "info@delightsomejuice.com", "New Order", message);
+    send_email(
+      "order@delightsomejuice.com",
+      "info@delightsomejuice.com",
+      "New Order",
+      message,
+    );
   } catch (error) {
     console.log("Error in save_order: ", error.message);
     res
@@ -115,7 +124,7 @@ const save_order = async (req, res) => {
 };
 
 const send_contact_mail = async (req, res) => {
-  const {fullname, email, subject, message} = req.body;
+  const { fullname, email, subject, message } = req.body;
 
   if (!fullname || !email || !subject) {
     return res.status(500).json({ message: "Enter all required fields" });
@@ -130,14 +139,19 @@ const send_contact_mail = async (req, res) => {
   `;
 
   try {
-    send_email('info@delightsomejuice.com', 'info@delightsomejuice.com', `From Website- ${subject}`, htmlMessage);
-    
-    res.json({ message: 'Message sent successfully'});
+    send_email(
+      "info@delightsomejuice.com",
+      "info@delightsomejuice.com",
+      `From Website- ${subject}`,
+      htmlMessage,
+    );
+
+    res.json({ message: "Message sent successfully" });
   } catch (error) {
-    console.log('Error in send_contact_mail:', error)
+    console.log("Error in send_contact_mail:", error);
     return res.status(500).json({ message: "Error Sending message" });
   }
-}
+};
 
 const view_order = async (req, res) => {
   const { id: orderId } = req.params;
@@ -209,17 +223,37 @@ const get_orders = async (req, res) => {
   }
 };
 
+const get_reviews = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let query = {};
+
+    if (id === "all") {
+      query = {};
+    } else {
+      query = { products: { $regex: id, $options: "i" } }; // {'products': `/${id}/`}
+    }
+
+    const reviews = await Review.find(query);
+
+    reviews.sort((a, b) => b.reviewTimestamp - a.reviewTimestamp);
+
+    res.json({ reviews });
+  } catch (error) {
+    console.log("Error in get_reviews:", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal Server error", error: error.message });
+  }
+};
+
 const drop_review = async (req, res) => {
   // get values from body
-  const {
-    products, reviewText, name
-  } = req.body;
+  const { products, reviewText, name } = req.body;
 
   // verify all fields
-  if (
-    !products ||
-    !reviewText
-  ) {
+  if (!reviewText) {
     return res.status(500).json({ message: "Invalid Entry" });
   }
 
@@ -233,11 +267,13 @@ const drop_review = async (req, res) => {
 
   try {
     const review = await Review.create({
-      products, reviewText, name, reviewTimestamp,
+      products,
+      reviewText,
+      name,
+      reviewTimestamp,
     });
 
     res.json({ message: "Review Sent", review });
-
   } catch (error) {
     console.log("Error in drop_review: ", error.message);
     res
@@ -286,4 +322,5 @@ module.exports = {
   generate_record_id,
   send_contact_mail,
   drop_review,
+  get_reviews,
 };

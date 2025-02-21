@@ -16,6 +16,8 @@ import {
   ShoppingCart,
   Star,
   Twitter,
+  UserCircle2,
+  Loader,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProductRatings from "../components/ProductRatings";
@@ -56,7 +58,7 @@ const ProductPage = () => {
 
   const [isLiked, setIsLiked] = useState(false);
 
-  const {getReviews} = useOrderHooks();
+  const { getReviews } = useOrderHooks();
 
   // Like product effect
   useEffect(() => {
@@ -117,10 +119,23 @@ const ProductPage = () => {
     }
   };
 
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [reviews, setReviews] = useState([]);
+
+  const get_reviews = async (id) => {
+    setLoadingReviews(true);
+    const r = await getReviews(id);
+
+    setReviews(r);
+    setLoadingReviews(false);
+  };
+
   // pgae title
   useEffect(() => {
     if (!product) return;
     setPage(product.name || "undefined");
+
+    get_reviews(product.name);
   }, [setPage, product]);
 
   const [activeImage, setActiveImage] = useState(0);
@@ -162,7 +177,7 @@ const ProductPage = () => {
           <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
             <ProductRatings rating={product.averageRating || 0} />
             <span className="text-[14px]">
-              {product.reviewCount || 0} customer reviews
+              {reviews && reviews.length > 0 && reviews.length || 0} customer reviews
             </span>
           </div>
 
@@ -228,7 +243,7 @@ const ProductPage = () => {
                           key={thumbnail}
                           src={thumbnail}
                           alt={index}
-                          className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "opacity-100 cursor-not-allowed" : "cursor-pointer opacity-50"}`}
+                          className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "cursor-not-allowed opacity-100" : "cursor-pointer opacity-50"}`}
                         />
                       );
                     })}
@@ -385,22 +400,52 @@ const ProductPage = () => {
 
               {/* Review options */}
               <div className="mt-6 flex flex-wrap items-center gap-5 border-b pb-6">
-                <Link to={`/drop-review?product=${product.link}`} target="_blank" className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
+                <Link
+                  to={`/drop-review?product=${product.link}`}
+                  target="_blank"
+                  className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
+                >
                   <PenBox size={18} /> <span>Leave a Review</span>
                 </Link>
 
-                <Link to={`/drop-rating?product=${product.link}`} target="_blank" className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600">
+                {/* <Link
+                  to={`/drop-rating?product=${product.link}`}
+                  target="_blank"
+                  className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
+                >
                   <Star size={18} /> <span>Rate this Product</span>
-                </Link>
+                </Link> */}
               </div>
 
               {/* All reviews */}
-              <div className="flex flex-col gap-5">
-                { getReviews && <div>
-                  {getReviews.map((review) => <div key={review._id}></div>)}
-                </div> ||
-                <p>There are no reviews yet.</p>
-}
+              <div>
+                {(loadingReviews && (
+                  <div className="flex w-full justify-center">
+                    <Loader className="size-6 animate-spin" />
+                  </div>
+                )) ||
+                  (reviews && reviews.length > 0 && (
+                    <div className="flex flex-col gap-3">
+                      {reviews.map((review, index) => (
+                        <div key={index}>
+                          <div className="flex gap-2 border-b border-gray-200 pb-3">
+                            <UserCircle2
+                            className="size-7"
+                              strokeWidth={1}
+                            />
+
+                            <div className="w-full">
+                              <div className="mb-2 font-semibold">
+                                {review.name}
+                              </div>
+
+                              <div className="text-sm">{review.reviewText}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )) || <p>There are no reviews yet.</p>}
               </div>
             </div>
 
@@ -1183,7 +1228,9 @@ function LMU() {
         </div>
 
         <div>
-          <div className="mb-2 mt-5 font-bold text-[16px]">Compelling Marketing Story</div>
+          <div className="mb-2 mt-5 text-[16px] font-bold">
+            Compelling Marketing Story
+          </div>
 
           <div className="font-bold">
             Lift Me Up – Elevate Your Health, One Sip at a Time
@@ -1511,7 +1558,7 @@ const ImagePreview = ({ src, alt, width, height, zoomScale = 2 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e) => {
-    const { left, top} = e.target.getBoundingClientRect();
+    const { left, top } = e.target.getBoundingClientRect();
     const x = e.clientX - left + 170;
     const y = e.clientY - top + 120;
 
@@ -1523,7 +1570,7 @@ const ImagePreview = ({ src, alt, width, height, zoomScale = 2 }) => {
 
   return (
     <div
-      className="relative overflow-hidden inline-block"
+      className="relative inline-block overflow-hidden"
       style={{ width, height }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -1532,12 +1579,12 @@ const ImagePreview = ({ src, alt, width, height, zoomScale = 2 }) => {
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover`}
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        className={`h-full w-full object-cover`}
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
       />
       {isHovered && (
         <div
-          className="absolute border-[2px] pointer-events-none bg-no-repeat bg-center z-10 transition"
+          className="pointer-events-none absolute z-10 border-[2px] bg-center bg-no-repeat transition"
           style={{
             width: `150px`,
             height: `150px`,

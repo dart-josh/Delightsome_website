@@ -6,6 +6,7 @@ import { useProductHooks } from "../Hooks/useGeneralHooks";
 import ProductRatings from "./ProductRatings";
 import { useProductStore } from "../Hooks/useProductStore";
 import { Link } from "react-router-dom";
+import { useOrderHooks } from "../Hooks/useOrderHooks";
 
 const ProductTile = ({ product, tile_type }) => {
   // LIST
@@ -233,10 +234,25 @@ const Price = ({ product }) => {
 
 // RATINGS
 const Ratings = ({ product }) => {
+  const { getReviews } = useOrderHooks();
+  const [reviews, setReviews] = useState([]);
+
+  const get_reviews = async (id) => {
+    const r = await getReviews(id);
+
+    setReviews(r);
+  };
+
+  // pgae title
+  useEffect(() => {
+
+    get_reviews(product.name);
+  }, [product]);
+
   return (
     <div className="mb-2 flex items-center gap-0.5">
       <ProductRatings rating={product.averageRating} />
-      <span className="pl-1 text-[14px]">{product.reviewCount || 0}</span>
+      <span className="pl-1 text-[14px]">{reviews && reviews.length > 0 && reviews.length || 0}</span>
     </div>
   );
 };

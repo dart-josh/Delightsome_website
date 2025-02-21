@@ -766,10 +766,11 @@ const NavbarArea = () => {
       name: "Yoghurt",
       link: "/product-category/yoghurt",
     },
-    {
-      name: "Parfait",
-      link: "/product-category/parfait",
-    },
+    // {
+    //   name: "Parfait",
+    //   link: "/product-category/parfait",
+    // },
+    
     {
       name: "Honey",
       link: "/product-category/honey",
@@ -785,6 +786,10 @@ const NavbarArea = () => {
     {
       name: "About Us",
       link: "/about",
+    },
+    {
+      name: "Reviews",
+      link: "/reviews",
     },
     {
       name: "Contact",

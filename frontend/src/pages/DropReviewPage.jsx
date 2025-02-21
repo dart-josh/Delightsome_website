@@ -14,7 +14,7 @@ const DropReviewPage = () => {
   // Set current page
   useEffect(() => {
     setCurrentPage("Review");
-    // window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [setCurrentPage]);
 
   return (

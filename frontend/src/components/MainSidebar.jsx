@@ -101,9 +101,13 @@ const MainSidebar = () => {
       name: "My Orders",
       link: "/orders",
     },
+    // {
+    //   name: "Wishlist",
+    //   link: "/wishlist",
+    // },
     {
-      name: "Wishlist",
-      link: "/wishlist",
+      name: "Reviews",
+      link: "/reviews",
     },
     {
       name: "Contact",

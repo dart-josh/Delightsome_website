@@ -118,6 +118,10 @@ export const Footer = () => {
       name: "About Us",
       link: "/about",
     },
+    {
+      name: "Reviews",
+      link: "/reviews",
+    },
   ];
 
   return (
