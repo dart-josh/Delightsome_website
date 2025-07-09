@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
@@ -5,8 +6,9 @@ import { Link } from "react-router-dom";
 import RelatedProducts from "../components/RelatedProducts";
 import { Loader, PenBox, UserCircle2 } from "lucide-react";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
+import MetaWrap from "../utils/MetaWrap";
 
-const ReviewPage = () => {
+const ReviewPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
   const { getReviews } = useOrderHooks();
 
@@ -29,6 +31,7 @@ const ReviewPage = () => {
   }, [setCurrentPage]);
 
   return (
+    <MetaWrap path={path}>
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
       {/* Top bar */}
       <div className="hidden md:block">
@@ -93,6 +96,7 @@ const ReviewPage = () => {
         <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} />
       </div>
     </div>
+    </MetaWrap>
   );
 };
 

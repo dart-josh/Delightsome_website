@@ -6,8 +6,9 @@ import { useProductStore } from "../Hooks/useProductStore";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { Container, Copy, Loader, Store } from "lucide-react";
 import toast from "react-hot-toast";
+import MetaWrap from "../utils/MetaWrap";
 
-const ViewOrderPage = () => {
+const ViewOrderPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
   const { clearCart } = useProductStore();
   const { getOrderDetails, refresh_order } = useOrderHooks();
@@ -49,6 +50,7 @@ const ViewOrderPage = () => {
   }, [clearCart, getOrderDetails, order_id, setCurrentPage, status]);
 
   return (
+    <MetaWrap path={path}>
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
       {/* Top bar */}
       <div className="hidden md:block">
@@ -112,6 +114,7 @@ const ViewOrderPage = () => {
         </div>
       )}
     </div>
+    </MetaWrap>
   );
 };
 

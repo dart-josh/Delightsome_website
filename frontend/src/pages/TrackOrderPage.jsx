@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Link, useNavigate } from "react-router-dom";
 import RelatedProducts from "../components/RelatedProducts";
 import { useEffect, useRef } from "react";
@@ -5,8 +6,9 @@ import { usePageHooks } from "../Hooks/useGeneralHooks";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
+import MetaWrap from "../utils/MetaWrap";
 
-const TrackOrderPage = () => {
+const TrackOrderPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
 
   // Set current page
@@ -22,6 +24,7 @@ const TrackOrderPage = () => {
   const order_id_ref = useRef(null);
 
   return (
+    <MetaWrap path={path}>
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
       {/* Top bar */}
       <div className="hidden md:block">
@@ -84,6 +87,7 @@ const TrackOrderPage = () => {
         <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} />
       </div>
     </div>
+    </MetaWrap>
   );
 };
 

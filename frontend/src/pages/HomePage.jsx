@@ -3,8 +3,10 @@ import ImageSlider from "../components/Slider";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
+import MetaWrap from "../utils/MetaWrap";
 
-const HomePage = () => {
+// eslint-disable-next-line react/prop-types
+const HomePage = ({ path }) => {
   const { setCurrentPage } = usePageHooks();
 
   useEffect(() => {
@@ -12,33 +14,31 @@ const HomePage = () => {
   }, [setCurrentPage]);
 
   return (
-    <div className="relative">
-      {/* Banner */}
-      <ImageSlider />
+    <MetaWrap path={path}>
+      <div className="relative">
+        {/* Banner */}
+        <ImageSlider />
 
-      <div className="relative max-w-[1200px] justify-center md:mx-auto lg:px-5">
-        {/* Short Info */}
-        <div className="bg-teal0 w-full px-1">
-          <ShortInfo />
-        </div>
-
-        <Categories />
-
-        <div className="flex justify-between bg-white">
-          <span></span>
-          <div className="mx-4 mt-5 flex items-center cursor-pointer font-semibold italic justify-center underline sm:text-xl gap-2 text-green-700 transition-all duration-500 hover:scale-105 sm:mx-10 sm:mt-10">
-            <AlignLeft />
-            <Link
-              to={"/shop"}
-            >
-              Shop all
-            </Link>
+        <div className="relative max-w-[1200px] justify-center md:mx-auto lg:px-5">
+          {/* Short Info */}
+          <div className="bg-teal0 w-full px-1">
+            <ShortInfo />
           </div>
-        </div>
 
-        <RecommendedProducts />
+          <Categories />
+
+          <div className="flex justify-between bg-white">
+            <span></span>
+            <div className="mx-4 mt-5 flex cursor-pointer items-center justify-center gap-2 font-semibold italic text-green-700 underline transition-all duration-300 hover:scale-105 sm:mx-10 sm:mt-10 sm:text-xl">
+              <AlignLeft />
+              <Link to={"/shop"}>Shop Now</Link>
+            </div>
+          </div>
+
+          <RecommendedProducts />
+        </div>
       </div>
-    </div>
+    </MetaWrap>
   );
 };
 

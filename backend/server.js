@@ -1,19 +1,30 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { connectDB } = require("./utils/db.js");
+const { connectDB } = require("./utils/db.js").default;
 
 const storeRoutes = require("./routes/store.route.js");
 const { app, server } = require("./socket/socket.js");
 
-const cors = require('cors');
+const cors = require("cors");
 const path = require("path");
 
-app.use(cors({
-    origin: 'http://localhost:5173', // use your actual domain name (or localhost), using * is not recommended
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
-    credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // use your actual domain name (or localhost), using * is not recommended
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Origin",
+      "X-Requested-With",
+      "Accept",
+      "x-client-key",
+      "x-client-token",
+      "x-client-secret",
+      "Authorization",
+    ],
+    credentials: true,
+  }),
+);
 
 dotenv.config();
 

@@ -15,8 +15,9 @@ import { useState, useEffect, useRef } from "react";
 import FilterSidebar from "../components/FilterSidebar";
 import { useSidebarHooks, usePageHooks } from "../Hooks/useGeneralHooks";
 import { useProductStore } from "../Hooks/useProductStore";
+import MetaWrap from "../utils/MetaWrap";
 
-const ShopPage = () => {
+const ShopPage = ({ path }) => {
   const { openFilterSidebar } = useSidebarHooks();
   const {
     setCurrentPage: setPage,
@@ -140,132 +141,137 @@ const ShopPage = () => {
     listRef.current.scrollIntoView({ top: 0, behavior: "smooth" });
   }, [currentPage, category]);
 
+  // meta details
+  const meta = category === 'Yoghurt' ? '/yoghurt' : path;
+
   return (
-    <div className="xs:px-1 xs:mx-5 relative mx-2 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
-      {/* Top bar */}
-      <div className="hidden md:block">
-        <div className="text-md mb-6 flex justify-between">
-          <div className="flex gap-3">
-            <Link to="/">Home</Link>
-            <span>/</span>
-            <span>{category}</span>
-          </div>
-
-          <div
-            onClick={() => history(-1)}
-            className="flex cursor-pointer items-center gap-3 text-black"
-          >
-            <ChevronLeft size={18} />
-            <span>Previous Page</span>
-          </div>
-        </div>
-
-        {/* Page Title */}
-        <div className="mb-8 text-3xl font-bold">{category}</div>
-      </div>
-
-      {/* Page details */}
-      <div className="flex w-full">
-        {/* Side bar */}
-        <FilterSidebar additionalClasses={"max-w-[230px] hidden lg:flex"} />
-
-        {/* Product details */}
-        <div className="w-full">
-          {/* Banner */}
-          {category !== "Shop" && <Banner category={category} />}
-
-          {/* Filter & sort */}
-          <div ref={listRef} className="xs:mb-10 mb-6 px-0 md:px-5">
-            <div className="flex items-center justify-between">
-              <div
-                className="flex cursor-pointer items-center gap-2 md:hidden"
-                onClick={() => openFilterSidebar()}
-              >
-                <Filter size={20} className="stroke-green-600" /> Filter
-              </div>
-
-              <div className="hidden items-center gap-4 md:flex">
-                <div
-                  onClick={() => openFilterSidebar()}
-                  className="hidden cursor-pointer rounded-lg border border-gray-400 p-[10px] md:flex lg:hidden"
-                >
-                  <Filter size={22} />
-                </div>
-                {(productsToView && productsToView.length > 0 && (
-                  <span>
-                    {" "}
-                    Showing{" "}
-                    {productsToView.length <= 12
-                      ? "all"
-                      : `${(currentPage - 1) * 12 + 1}-${currentPage < pageList.length ? 12 : productsToView.length}`}{" "}
-                    of {productsToView.length} results{" "}
-                  </span>
-                )) || <span>No products</span>}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <SortMenu
-                  additionalClasses={"hidden xs:block"}
-                  sortValue={sortValue}
-                  setSortValue={setSortValue}
-                />
-                <LayoutGrid
-                  onClick={() => setDefaultTileType("grid")}
-                  className="cursor-pointer"
-                  fill={deafultTile_type === "grid" ? "green" : "black"}
-                  stroke={deafultTile_type === "grid" ? "green" : "black"}
-                />
-                <StretchHorizontal
-                  onClick={() => setDefaultTileType("list")}
-                  className="cursor-pointer"
-                  fill={deafultTile_type === "list" ? "green" : "black"}
-                  stroke={deafultTile_type === "list" ? "green" : "black"}
-                />
-              </div>
+    <MetaWrap path={meta}>
+      <div className="xs:px-1 xs:mx-5 relative mx-2 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
+        {/* Top bar */}
+        <div className="hidden md:block">
+          <div className="text-md mb-6 flex justify-between">
+            <div className="flex gap-3">
+              <Link to="/">Home</Link>
+              <span>/</span>
+              <span>{category}</span>
             </div>
 
-            <SortMenu
-              additionalClasses={"xs:hidden block pt-2 w-full"}
-              sortValue={sortValue}
-              setSortValue={setSortValue}
+            <div
+              onClick={() => history(-1)}
+              className="flex cursor-pointer items-center gap-3 text-black"
+            >
+              <ChevronLeft size={18} />
+              <span>Previous Page</span>
+            </div>
+          </div>
+
+          {/* Page Title */}
+          <div className="mb-8 text-3xl font-bold">{category}</div>
+        </div>
+
+        {/* Page details */}
+        <div className="flex w-full">
+          {/* Side bar */}
+          <FilterSidebar additionalClasses={"max-w-[230px] hidden lg:flex"} />
+
+          {/* Product details */}
+          <div className="w-full">
+            {/* Banner */}
+            {category !== "Shop" && <Banner category={category} />}
+
+            {/* Filter & sort */}
+            <div ref={listRef} className="xs:mb-10 mb-6 px-0 md:px-5">
+              <div className="flex items-center justify-between">
+                <div
+                  className="flex cursor-pointer items-center gap-2 md:hidden"
+                  onClick={() => openFilterSidebar()}
+                >
+                  <Filter size={20} className="stroke-green-600" /> Filter
+                </div>
+
+                <div className="hidden items-center gap-4 md:flex">
+                  <div
+                    onClick={() => openFilterSidebar()}
+                    className="hidden cursor-pointer rounded-lg border border-gray-400 p-[10px] md:flex lg:hidden"
+                  >
+                    <Filter size={22} />
+                  </div>
+                  {(productsToView && productsToView.length > 0 && (
+                    <span>
+                      {" "}
+                      Showing{" "}
+                      {productsToView.length <= 12
+                        ? "all"
+                        : `${(currentPage - 1) * 12 + 1}-${currentPage < pageList.length ? 12 : productsToView.length}`}{" "}
+                      of {productsToView.length} results{" "}
+                    </span>
+                  )) || <span>No products</span>}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <SortMenu
+                    additionalClasses={"hidden xs:block"}
+                    sortValue={sortValue}
+                    setSortValue={setSortValue}
+                  />
+                  <LayoutGrid
+                    onClick={() => setDefaultTileType("grid")}
+                    className="cursor-pointer"
+                    fill={deafultTile_type === "grid" ? "green" : "black"}
+                    stroke={deafultTile_type === "grid" ? "green" : "black"}
+                  />
+                  <StretchHorizontal
+                    onClick={() => setDefaultTileType("list")}
+                    className="cursor-pointer"
+                    fill={deafultTile_type === "list" ? "green" : "black"}
+                    stroke={deafultTile_type === "list" ? "green" : "black"}
+                  />
+                </div>
+              </div>
+
+              <SortMenu
+                additionalClasses={"xs:hidden block pt-2 w-full"}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+              />
+            </div>
+
+            {/* Products */}
+            {(productsToView && productsToView.length > 0 && (
+              <div
+                className={
+                  deafultTile_type === "grid"
+                    ? "xs:gap-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-0 lg:grid-cols-4"
+                    : "flex w-full flex-col"
+                }
+              >
+                {productsToView
+                  .slice((currentPage - 1) * 12, currentPage * 12)
+                  .map((product) => {
+                    return (
+                      <ProductTile
+                        tile_type={deafultTile_type}
+                        key={product.id}
+                        product={product}
+                      />
+                    );
+                  })}
+              </div>
+            )) || (
+              <div className="flex items-center justify-center gap-4 text-lg font-bold">
+                <ListRestart /> No products to view
+              </div>
+            )}
+
+            <PageSelector
+              pageList={pageList}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
             />
           </div>
-
-          {/* Products */}
-          {(productsToView && productsToView.length > 0 && (
-            <div
-              className={
-                deafultTile_type === "grid"
-                  ? "xs:gap-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-0 lg:grid-cols-4"
-                  : "flex w-full flex-col"
-              }
-            >
-              {productsToView
-                .slice((currentPage - 1) * 12, currentPage * 12)
-                .map((product) => {
-                  return (
-                    <ProductTile
-                      tile_type={deafultTile_type}
-                      key={product.id}
-                      product={product}
-                    />
-                  );
-                })}
-            </div>
-          )) || (
-            <div className="flex items-center justify-center gap-4 text-lg font-bold">
-              <ListRestart /> No products to view
-            </div>
-          )}
-
-          <PageSelector
-            pageList={pageList}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
         </div>
       </div>
-    </div>
+    </MetaWrap>
   );
 };
 
@@ -279,11 +285,7 @@ const Banner = ({ category }) => {
   if (cat && cat[0] && cat[0].banner)
     return (
       <div className="mb-8 w-full px-0 lg:px-5">
-        <img
-          src={cat[0].banner}
-          alt="Banner Image"
-          className="object-cover"
-        />
+        <img src={cat[0].banner} alt="Banner Image" className="object-cover" />
       </div>
     );
 };

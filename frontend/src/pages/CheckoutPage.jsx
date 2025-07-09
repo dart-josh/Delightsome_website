@@ -7,11 +7,12 @@ import { Loader, Minus, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
+import MetaWrap from "../utils/MetaWrap";
 
-const CheckoutPage = () => {
+const CheckoutPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
   const { cartProducts } = useProductStore();
-  const {locationList} = useOrderHooks();
+  const { locationList } = useOrderHooks();
 
   const navigate = useNavigate();
 
@@ -73,14 +74,16 @@ const CheckoutPage = () => {
       return toast.error("Invalid Phone", { toastId: "error_1" });
     }
 
-    const address = (deliveryMethod === "Delivery") ? (
-      address_1.current.value +
-      " " +
-      address_2.current.value +
-      "\n" +
-      city.current.value +
-      " " +
-      state.current.value ) : '';
+    const address =
+      deliveryMethod === "Delivery"
+        ? address_1.current.value +
+          " " +
+          address_2.current.value +
+          "\n" +
+          city.current.value +
+          " " +
+          state.current.value
+        : "";
 
     const order = {
       products: cartProducts.map((product) => {
@@ -139,70 +142,70 @@ const CheckoutPage = () => {
   // set delivery fee
   useEffect(() => {
     if (deliveryMethod !== "Delivery") {
-      setLocation('');
+      setLocation("");
     }
 
     if (location) {
       const loc = locationList.find((loc) => loc.location === location);
-    setDelivery_fee(loc?.price ?? 1);
+      setDelivery_fee(loc?.price ?? 1);
     } else setDelivery_fee(0);
   }, [deliveryMethod, location, locationList]);
 
   return (
-    <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
-      {/* Top bar */}
-      <div className="hidden md:block">
-        <div className="text-md mb-6 flex justify-between">
-          <div className="flex gap-3">
-            <Link to="/">Home</Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-400">Checkout</span>
+    <MetaWrap path={path}>
+      <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
+        {/* Top bar */}
+        <div className="hidden md:block">
+          <div className="text-md mb-6 flex justify-between">
+            <div className="flex gap-3">
+              <Link to="/">Home</Link>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-400">Checkout</span>
+            </div>
           </div>
+
+          {/* Page Title */}
+          <div className="mb-8 text-2xl font-bold">Checkout</div>
         </div>
 
-        {/* Page Title */}
-        <div className="mb-8 text-2xl font-bold">Checkout</div>
-      </div>
+        <div className="border-y py-3">
+          Have A Coupon? {""}
+          <span className="cursor-pointer text-green-600 transition duration-300 ease-in-out hover:underline">
+            Click Here To Enter Your Code
+          </span>
+        </div>
 
-      <div className="border-y py-3">
-        Have A Coupon? {""}
-        <span
-          className="cursor-pointer text-green-600 transition duration-300 ease-in-out hover:underline"
-        >
-          Click Here To Enter Your Code
-        </span>
+        <div className="mt-10 flex w-full flex-col md:flex-row">
+          <DeliveryDetails
+            f_name={f_name}
+            l_name={l_name}
+            address_1={address_1}
+            address_2={address_2}
+            city={city}
+            state={state}
+            phone={phone}
+            email={email}
+            note={note}
+            deliveryMethod={deliveryMethod}
+            setDeliveryMethod={setDeliveryMethod}
+            location={location}
+            setLocation={setLocation}
+            locationList={locationList}
+          />
+          <OrderDetails
+            delivery_fee={delivery_fee}
+            save_order={save_order}
+            total_qty={total_qty}
+            order_cost={order_cost}
+            total={total}
+            setTotal_qty={setTotal_qty}
+            setOrder_cost={setOrder_cost}
+            setTotal={setTotal}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
-
-      <div className="mt-10 flex w-full flex-col md:flex-row">
-        <DeliveryDetails
-          f_name={f_name}
-          l_name={l_name}
-          address_1={address_1}
-          address_2={address_2}
-          city={city}
-          state={state}
-          phone={phone}
-          email={email}
-          note={note}
-          deliveryMethod={deliveryMethod}
-          setDeliveryMethod={setDeliveryMethod}
-          location={location}
-          setLocation={setLocation}
-          locationList={locationList}
-        />
-        <OrderDetails
-          delivery_fee={delivery_fee}
-          save_order={save_order}
-          total_qty={total_qty}
-          order_cost={order_cost}
-          total={total}
-          setTotal_qty={setTotal_qty}
-          setOrder_cost={setOrder_cost}
-          setTotal={setTotal}
-          isLoading={isLoading}
-        />
-      </div>
-    </div>
+    </MetaWrap>
   );
 };
 
@@ -267,38 +270,37 @@ const DeliveryDetails = ({
             id="delivery_method"
             placeholder="Select"
           >
-            <option value="">
-              Select one
-            </option>
+            <option value="">Select one</option>
             <option value="Delivery">Delivery</option>
             <option value="Store Pickup">Store Pickup</option>
           </select>
         </div>
 
         {/* location */}
-        {deliveryMethod === "Delivery" && <div>
-          <div className="mb-1">
-            <label htmlFor="location">
-              Location <span className="text-red-700">*</span>
-            </label>
+        {deliveryMethod === "Delivery" && (
+          <div>
+            <div className="mb-1">
+              <label htmlFor="location">
+                Location <span className="text-red-700">*</span>
+              </label>
+            </div>
+            <select
+              className="w-full rounded-md border p-2"
+              name="location"
+              defaultValue="Select"
+              onChange={changeLocation}
+              id="location"
+              placeholder="Select"
+            >
+              <option value="">Select one</option>
+              {locationList.map((loc, index) => (
+                <option key={index} value={loc.location}>
+                  {loc.location}
+                </option>
+              ))}
+            </select>
           </div>
-          <select
-            className="w-full rounded-md border p-2"
-            name="location"
-            defaultValue="Select"
-            onChange={changeLocation}
-            id="location"
-            placeholder="Select"
-          >
-            <option value="">
-              Select one
-            </option>
-            {locationList.map((loc, index) => (
-              <option key={index} value={loc.location}>
-                {loc.location}
-              </option>
-            ))}
-          </select></div>}
+        )}
 
         {/* address */}
         {(deliveryMethod === "Delivery" && location && (
@@ -335,20 +337,21 @@ const DeliveryDetails = ({
               readOnly={"Nigeria"}
             />
           </div>
-        )) || deliveryMethod === "Store Pickup" &&  (
-          <div>
-            <div className="mb-1">
-              <label className="text-sm font-semibold">Store address</label>
-            </div>
+        )) ||
+          (deliveryMethod === "Store Pickup" && (
+            <div>
+              <div className="mb-1">
+                <label className="text-sm font-semibold">Store address</label>
+              </div>
 
-            <div className="text-sm font-semibold text-gray-800">
-              46 Beach Road(TOS Benson Road),<br></br>Opposite Ikorodu General
-              Hospital,
-              <br />
-              Ikorodu, Lagos
+              <div className="text-sm font-semibold text-gray-800">
+                46 Beach Road(TOS Benson Road),<br></br>Opposite Ikorodu General
+                Hospital,
+                <br />
+                Ikorodu, Lagos
+              </div>
             </div>
-          </div>
-        )}
+          ))}
 
         <TextField
           inputRef={phone}

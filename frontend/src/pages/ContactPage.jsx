@@ -1,11 +1,13 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
 import { Link } from "react-router-dom";
 import { Loader, MapPin, MailCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import MetaWrap from "../utils/MetaWrap";
 
-const ContactPage = () => {
+const ContactPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +76,7 @@ const ContactPage = () => {
   };
 
   return (
+    <MetaWrap path={path}>
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
       {/* Top bar */}
       <div className="hidden md:block">
@@ -207,6 +210,7 @@ const ContactPage = () => {
         </div>
       </div>
     </div>
+    </MetaWrap>
   );
 };
 

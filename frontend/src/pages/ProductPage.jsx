@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useParams } from "react-router-dom";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
@@ -25,8 +27,9 @@ import RelatedProducts from "../components/RelatedProducts";
 import { useProductStore } from "../Hooks/useProductStore";
 import toast from "react-hot-toast";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
+import MetaWrap from "../utils/MetaWrap";
 
-const ProductPage = () => {
+const ProductPage = ({ path }) => {
   const { id: link } = useParams();
 
   const {
@@ -151,315 +154,319 @@ const ProductPage = () => {
     );
   }
 
+
   return (
-    <div className="xs:mx-5 relative mx-[10px] max-w-[1200px] justify-center pt-5 md:mx-auto md:px-5">
-      {/* Top bar */}
-      <div className="hidden md:block">
-        <div className="text-md mb-6 flex justify-between">
-          <div className="flex gap-3">
-            <Link to="/">Home</Link>
-            <span>/</span>
-            <Link to="/shop">Shop</Link>
-            <span>/</span>
-            <span>{product.name}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Product details */}
-      <div>
-        {/* Product name */}
-        <div className="mb-2 text-2xl font-bold">{product.name}</div>
-
-        {/* Ratings, reviews, social icons */}
-        <div className="mb-6 flex flex-col gap-2 md:mb-8 md:flex-row md:items-center md:justify-between md:gap-0">
-          {/* Rating */}
-          <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
-            <ProductRatings rating={product.averageRating || 0} />
-            <span className="text-[14px]">
-              {reviews && reviews.length > 0 && reviews.length || 0} customer reviews
-            </span>
-          </div>
-
-          {/* Social icons */}
-          <div className="flex items-center gap-3 md:gap-5">
-            <Link to={"/"} target="_blank">
-              <Facebook
-                strokeWidth={1}
-                className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
-              />
-            </Link>
-            <Link to={"/"} target="_blank">
-              <Twitter
-                strokeWidth={1}
-                className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
-              />
-            </Link>
-            <Link to={"/"} target="_blank">
-              <Linkedin
-                strokeWidth={1}
-                className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
-              />
-            </Link>
-            <Link to={"/"} target="_blank">
-              <Instagram
-                strokeWidth={1}
-                className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
-              />
-            </Link>
-            <Link to={"/"} target="_blank">
-              <Mail
-                strokeWidth={1}
-                className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
-              />
-            </Link>
+    <MetaWrap path={path}>
+      <div className="xs:mx-5 relative mx-[10px] max-w-[1200px] justify-center pt-5 md:mx-auto md:px-5">
+        {/* Top bar */}
+        <div className="hidden md:block">
+          <div className="text-md mb-6 flex justify-between">
+            <div className="flex gap-3">
+              <Link to="/">Home</Link>
+              <span>/</span>
+              <Link to="/shop">Shop</Link>
+              <span>/</span>
+              <span>{product.name}</span>
+            </div>
           </div>
         </div>
 
-        {/* CONTENT */}
-        <div className="w-full gap-10 lg:flex">
-          {/* Product details */}
-          <div className="w-full">
-            <div className="flex flex-col gap-8 md:flex-row md:gap-14">
-              {/* Product image */}
-              <div className="w-full">
-                <img
-                  src={product.images && product.images[activeImage]}
-                  alt="Product Image"
-                  className="w-full"
+        {/* Product details */}
+        <div>
+          {/* Product name */}
+          <div className="mb-2 text-2xl font-bold">{product.name}</div>
+
+          {/* Ratings, reviews, social icons */}
+          <div className="mb-6 flex flex-col gap-2 md:mb-8 md:flex-row md:items-center md:justify-between md:gap-0">
+            {/* Rating */}
+            <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
+              <ProductRatings rating={product.averageRating || 0} />
+              <span className="text-[14px]">
+                {(reviews && reviews.length > 0 && reviews.length) || 0}{" "}
+                customer reviews
+              </span>
+            </div>
+
+            {/* Social icons */}
+            <div className="flex items-center gap-3 md:gap-5">
+              <Link to={"/"} target="_blank">
+                <Facebook
+                  strokeWidth={1}
+                  className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
                 />
+              </Link>
+              <Link to={"/"} target="_blank">
+                <Twitter
+                  strokeWidth={1}
+                  className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
+                />
+              </Link>
+              <Link to={"/"} target="_blank">
+                <Linkedin
+                  strokeWidth={1}
+                  className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
+                />
+              </Link>
+              <Link to={"/"} target="_blank">
+                <Instagram
+                  strokeWidth={1}
+                  className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
+                />
+              </Link>
+              <Link to={"/"} target="_blank">
+                <Mail
+                  strokeWidth={1}
+                  className="size-5 cursor-pointer text-gray-800 transition-all duration-300 hover:text-green-800 md:size-6"
+                />
+              </Link>
+            </div>
+          </div>
 
-                {/* Thumbnails */}
-                <div className="mt-5 flex w-full justify-center">
-                  {product.thumbnails &&
-                    product.thumbnails.map((thumbnail) => {
-                      const index = product.thumbnails.findIndex(
-                        (e) => e == thumbnail,
-                      );
-                      const isActive = index == activeImage;
-                      return (
-                        <img
-                          onClick={() => setActiveImage(index)}
-                          key={thumbnail}
-                          src={thumbnail}
-                          alt={index}
-                          className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "cursor-not-allowed opacity-100" : "cursor-pointer opacity-50"}`}
-                        />
-                      );
-                    })}
+          {/* CONTENT */}
+          <div className="w-full gap-10 lg:flex">
+            {/* Product details */}
+            <div className="w-full">
+              <div className="flex flex-col gap-8 md:flex-row md:gap-14">
+                {/* Product image */}
+                <div className="w-full">
+                  <img
+                    src={product.images && product.images[activeImage]}
+                    alt="Product Image"
+                    className="w-full"
+                  />
+
+                  {/* Thumbnails */}
+                  <div className="mt-5 flex w-full justify-center">
+                    {product.thumbnails &&
+                      product.thumbnails.map((thumbnail) => {
+                        const index = product.thumbnails.findIndex(
+                          (e) => e == thumbnail,
+                        );
+                        const isActive = index == activeImage;
+                        return (
+                          <img
+                            onClick={() => setActiveImage(index)}
+                            key={thumbnail}
+                            src={thumbnail}
+                            alt={index}
+                            className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "cursor-not-allowed opacity-100" : "cursor-pointer opacity-50"}`}
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
-              </div>
 
-              {/* Other details */}
-              <div className="flex w-full flex-col gap-2">
-                {/* Price & like button */}
-                <div className="mb-2 flex w-full items-center justify-between">
-                  <p className="text-[20px] font-semibold text-red-500">
-                    ₦{(product.price && product.price.toLocaleString()) || 0}.00
+                {/* Other details */}
+                <div className="flex w-full flex-col gap-2">
+                  {/* Price & like button */}
+                  <div className="mb-2 flex w-full items-center justify-between">
+                    <p className="text-[20px] font-semibold text-red-500">
+                      ₦{(product.price && product.price.toLocaleString()) || 0}
+                      .00
+                    </p>
+
+                    <Heart
+                      size={20}
+                      onClick={() => updateLikedProducts(product.id)}
+                      className={`cursor-pointer transition-all duration-300 hover:scale-110 ${isLiked ? "fill-red-500 stroke-red-500" : "stroke-gray-500"}`}
+                    />
+                  </div>
+
+                  {/* Short description */}
+                  <p className="w-full max-w-[600px] text-[15px]">
+                    {product.shortDescription}
                   </p>
 
-                  <Heart
-                    size={20}
-                    onClick={() => updateLikedProducts(product.id)}
-                    className={`cursor-pointer transition-all duration-300 hover:scale-110 ${isLiked ? "fill-red-500 stroke-red-500" : "stroke-gray-500"}`}
-                  />
-                </div>
-
-                {/* Short description */}
-                <p className="w-full max-w-[600px] text-[15px]">
-                  {product.shortDescription}
-                </p>
-
-                {/* Item quantity */}
-                <div className="mt-3 flex h-11 w-full max-w-[150px] items-center rounded-xl border border-gray-200 text-gray-700 md:mt-5">
-                  <button
-                    onClick={decreaseItemQty}
-                    className="flex h-full w-[100px] items-center justify-center rounded-l-lg py-2 transition-all duration-300 hover:bg-gray-200 hover:text-green-900"
-                  >
-                    <Minus size={20} />
-                  </button>
-                  <div className="flex h-full w-full items-center justify-center">
-                    {itemQty}
+                  {/* Item quantity */}
+                  <div className="mt-3 flex h-11 w-full max-w-[150px] items-center rounded-xl border border-gray-200 text-gray-700 md:mt-5">
+                    <button
+                      onClick={decreaseItemQty}
+                      className="flex h-full w-[100px] items-center justify-center rounded-l-lg py-2 transition-all duration-300 hover:bg-gray-200 hover:text-green-900"
+                    >
+                      <Minus size={20} />
+                    </button>
+                    <div className="flex h-full w-full items-center justify-center">
+                      {itemQty}
+                    </div>
+                    <button
+                      onClick={increaseItemQty}
+                      className="flex h-full w-[100px] items-center justify-center rounded-r-lg transition-all duration-300 hover:bg-orange-400 hover:text-green-900"
+                    >
+                      <Plus size={20} />
+                    </button>
                   </div>
-                  <button
-                    onClick={increaseItemQty}
-                    className="flex h-full w-[100px] items-center justify-center rounded-r-lg transition-all duration-300 hover:bg-orange-400 hover:text-green-900"
-                  >
-                    <Plus size={20} />
-                  </button>
-                </div>
 
-                {/* Action buttons */}
-                <div className="xs:flex-row mt-3 flex flex-col gap-3 md:mt-5 md:flex-col">
-                  {/* Add to cart */}
-                  <button
-                    onClick={
-                      !isAddedToCart
-                        ? () => addToCart(itemQty)
-                        : () => {
-                            removeFromCart(product.id);
-                          }
-                    }
-                    className={`flex h-12 w-full items-center justify-center gap-3 rounded-md px-4 py-2 text-xl text-white transition-all duration-500 ${!isAddedToCart ? "bg-green-700 hover:bg-green-800" : "bg-red-500 hover:bg-red-700"}`}
-                  >
-                    <ShoppingCart size={22} fill="white" />
-                    <span className="text-[15px] font-bold">
-                      {!isAddedToCart ? "Add to Cart" : "Remove Item"}
-                    </span>
-                  </button>
+                  {/* Action buttons */}
+                  <div className="xs:flex-row mt-3 flex flex-col gap-3 md:mt-5 md:flex-col">
+                    {/* Add to cart */}
+                    <button
+                      onClick={
+                        !isAddedToCart
+                          ? () => addToCart(itemQty)
+                          : () => {
+                              removeFromCart(product.id);
+                            }
+                      }
+                      className={`flex h-12 w-full items-center justify-center gap-3 rounded-md px-4 py-2 text-xl text-white transition-all duration-500 ${!isAddedToCart ? "bg-green-700 hover:bg-green-800" : "bg-red-500 hover:bg-red-700"}`}
+                    >
+                      <ShoppingCart size={22} fill="white" />
+                      <span className="text-[15px] font-bold">
+                        {!isAddedToCart ? "Add to Cart" : "Remove Item"}
+                      </span>
+                    </button>
 
-                  {/* Buy now */}
-                  <button
-                    onClick={() => {
-                      toast.error("Not available", { toastId: "success1" });
-                    }}
-                    className={`flex h-12 w-full items-center justify-center gap-3 rounded-md bg-orange-500 px-4 py-2 text-xl text-black transition-all duration-500 hover:bg-orange-600`}
-                  >
-                    <CreditCard size={22} />
-                    <span className="text-[15px] font-bold">Buy Now</span>
-                  </button>
-                </div>
-
-                {/* Code category & details */}
-                <div className="mt-7 flex w-full flex-col gap-2 border-t border-gray-200 pt-5 text-[15px]">
-                  <span>SKU: {product.productCode}</span>
-                  <span>Category: {product.category}</span>
-                  <span>Tag: {product.tag}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Full description */}
-            <div className="mt-14 w-full text-[15px] text-gray-700">
-              {(product.productCode == "DJJCBR" && <BR />) ||
-                (product.productCode == "DJJCBS" && <BS />) ||
-                (product.productCode == "DJJCFGJ" && <FGJ />) ||
-                (product.productCode == "DJJCLMU" && <LMU />) ||
-                (product.productCode == "DJSMFM" && <FM />) ||
-                (product.productCode == "DJSMGB" && <GB />) || (
-                  <div className="flex w-full flex-col gap-4">
-                    {product.fullDescription &&
-                      product.fullDescription.map((paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
-                      ))}
+                    {/* Buy now */}
+                    <button
+                      onClick={() => {
+                        toast.error("Not available", { toastId: "success1" });
+                      }}
+                      className={`flex h-12 w-full items-center justify-center gap-3 rounded-md bg-orange-500 px-4 py-2 text-xl text-black transition-all duration-500 hover:bg-orange-600`}
+                    >
+                      <CreditCard size={22} />
+                      <span className="text-[15px] font-bold">Buy Now</span>
+                    </button>
                   </div>
-                )}
-            </div>
 
-            {/* Reviews */}
-            <div className="mt-14 flex w-full flex-col gap-4">
-              <div className="font-semibold">Reviews</div>
-
-              <div className="flex w-full flex-col gap-3">
-                <div className="flex w-[90%] items-center gap-5">
-                  <ProductRatings
-                    rating={5}
-                    size={18}
-                    fillColor={"fill-orange-400"}
-                    strokeColor="stroke-orange-400"
-                  />
-                  <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
-                </div>
-                <div className="flex w-[90%] items-center gap-5">
-                  <ProductRatings
-                    rating={4}
-                    size={18}
-                    fillColor={"fill-orange-400"}
-                    strokeColor="stroke-orange-400"
-                  />
-                  <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
-                </div>
-                <div className="flex w-[90%] items-center gap-5">
-                  <ProductRatings
-                    rating={3}
-                    size={18}
-                    fillColor={"fill-orange-400"}
-                    strokeColor="stroke-orange-400"
-                  />
-                  <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
-                </div>
-                <div className="flex w-[90%] items-center gap-5">
-                  <ProductRatings
-                    rating={2}
-                    size={18}
-                    fillColor={"fill-orange-400"}
-                    strokeColor="stroke-orange-400"
-                  />
-                  <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
-                </div>
-                <div className="flex w-[90%] items-center gap-5">
-                  <ProductRatings
-                    rating={1}
-                    size={18}
-                    fillColor={"fill-orange-400"}
-                    strokeColor="stroke-orange-400"
-                  />
-                  <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  {/* Code category & details */}
+                  <div className="mt-7 flex w-full flex-col gap-2 border-t border-gray-200 pt-5 text-[15px]">
+                    <span>SKU: {product.productCode}</span>
+                    <span>Category: {product.category}</span>
+                    <span>Tag: {product.tag}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Review options */}
-              <div className="mt-6 flex flex-wrap items-center gap-5 border-b pb-6">
-                <Link
-                  to={`/drop-review?product=${product.link}`}
-                  target="_blank"
-                  className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
-                >
-                  <PenBox size={18} /> <span>Leave a Review</span>
-                </Link>
+              {/* Full description */}
+              <div className="mt-14 w-full text-[15px] text-gray-700">
+                {(product.productCode == "DJJCBR" && <BR />) ||
+                  (product.productCode == "DJJCBS" && <BS />) ||
+                  (product.productCode == "DJJCFGJ" && <FGJ />) ||
+                  (product.productCode == "DJJCLMU" && <LMU />) ||
+                  (product.productCode == "DJSMFM" && <FM />) ||
+                  (product.productCode == "DJSMGB" && <GB />) || (
+                    <div className="flex w-full flex-col gap-4">
+                      {product.fullDescription &&
+                        product.fullDescription.map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
+                        ))}
+                    </div>
+                  )}
+              </div>
 
-                {/* <Link
+              {/* Reviews */}
+              <div className="mt-14 flex w-full flex-col gap-4">
+                <div className="font-semibold">Reviews</div>
+
+                <div className="flex w-full flex-col gap-3">
+                  <div className="flex w-[90%] items-center gap-5">
+                    <ProductRatings
+                      rating={5}
+                      size={18}
+                      fillColor={"fill-orange-400"}
+                      strokeColor="stroke-orange-400"
+                    />
+                    <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  </div>
+                  <div className="flex w-[90%] items-center gap-5">
+                    <ProductRatings
+                      rating={4}
+                      size={18}
+                      fillColor={"fill-orange-400"}
+                      strokeColor="stroke-orange-400"
+                    />
+                    <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  </div>
+                  <div className="flex w-[90%] items-center gap-5">
+                    <ProductRatings
+                      rating={3}
+                      size={18}
+                      fillColor={"fill-orange-400"}
+                      strokeColor="stroke-orange-400"
+                    />
+                    <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  </div>
+                  <div className="flex w-[90%] items-center gap-5">
+                    <ProductRatings
+                      rating={2}
+                      size={18}
+                      fillColor={"fill-orange-400"}
+                      strokeColor="stroke-orange-400"
+                    />
+                    <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  </div>
+                  <div className="flex w-[90%] items-center gap-5">
+                    <ProductRatings
+                      rating={1}
+                      size={18}
+                      fillColor={"fill-orange-400"}
+                      strokeColor="stroke-orange-400"
+                    />
+                    <div className="shimmer h-3 w-full animate-pulse rounded-r-3xl bg-gray-300"></div>
+                  </div>
+                </div>
+
+                {/* Review options */}
+                <div className="mt-6 flex flex-wrap items-center gap-5 border-b pb-6">
+                  <Link
+                    to={`/drop-review?product=${product.link}`}
+                    target="_blank"
+                    className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
+                  >
+                    <PenBox size={18} /> <span>Leave a Review</span>
+                  </Link>
+
+                  {/* <Link
                   to={`/drop-rating?product=${product.link}`}
                   target="_blank"
                   className="flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
                 >
                   <Star size={18} /> <span>Rate this Product</span>
                 </Link> */}
-              </div>
+                </div>
 
-              {/* All reviews */}
-              <div>
-                {(loadingReviews && (
-                  <div className="flex w-full justify-center">
-                    <Loader className="size-6 animate-spin" />
-                  </div>
-                )) ||
-                  (reviews && reviews.length > 0 && (
-                    <div className="flex flex-col gap-3">
-                      {reviews.map((review, index) => (
-                        <div key={index}>
-                          <div className="flex gap-2 border-b border-gray-200 pb-3">
-                            <UserCircle2
-                            className="size-7"
-                              strokeWidth={1}
-                            />
+                {/* All reviews */}
+                <div>
+                  {(loadingReviews && (
+                    <div className="flex w-full justify-center">
+                      <Loader className="size-6 animate-spin" />
+                    </div>
+                  )) ||
+                    (reviews && reviews.length > 0 && (
+                      <div className="flex flex-col gap-3">
+                        {reviews.map((review, index) => (
+                          <div key={index}>
+                            <div className="flex gap-2 border-b border-gray-200 pb-3">
+                              <UserCircle2 className="size-7" strokeWidth={1} />
 
-                            <div className="w-full">
-                              <div className="mb-2 font-semibold">
-                                {review.name}
+                              <div className="w-full">
+                                <div className="mb-2 font-semibold">
+                                  {review.name}
+                                </div>
+
+                                <div className="text-sm">
+                                  {review.reviewText}
+                                </div>
                               </div>
-
-                              <div className="text-sm">{review.reviewText}</div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )) || <p>There are no reviews yet.</p>}
+                        ))}
+                      </div>
+                    )) || <p>There are no reviews yet.</p>}
+                </div>
               </div>
+
+              {/*  */}
             </div>
 
-            {/*  */}
+            {/* Related products */}
+            <RelatedProducts
+              additionalClasses={"max-w-full lg:w-[300px]"}
+              product={product}
+            />
           </div>
-
-          {/* Related products */}
-          <RelatedProducts
-            additionalClasses={"max-w-full lg:w-[300px]"}
-            product={product}
-          />
         </div>
       </div>
-    </div>
+    </MetaWrap>
   );
 };
 

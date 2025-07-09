@@ -44,22 +44,25 @@ function App() {
       
       <div className="relative z-40 mt-[60px] lg:mt-[200px] pb-[55px]">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<ShopPage />} />
-          <Route path="/product-category/:category" element={<ShopPage />} />
-          <Route path="/product-tag/:tag" element={<ShopPage />} />
-          <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/view-order/:order_id" element={<ViewOrderPage />} />
-          <Route path="/track-order" element={<TrackOrderPage />} />
-          <Route path="/reviews" element={<ReviewPage />} />
-          <Route path="/drop-review" element={<DropReviewPage />} />
+          <Route path="/" element={<HomePage path="/" />} />
+          <Route path="/shop" element={<ShopPage path="/shop" />} />
+          <Route path="/product-category/:category" element={<ShopPage path="/shop" />} />
+          <Route path="/product-tag/:tag" element={<ShopPage path="/shop" />} />
+          <Route path="/product/:id" element={<ProductPage path="/shop" />} />
+          <Route path="/cart" element={<CartPage path="/" />} />
+          <Route path="/checkout" element={<CheckoutPage path="/" />} />
+          <Route path="/about" element={<AboutPage path="/about" />} />
+          <Route path="/contact" element={<ContactPage path="/" />} />
+          <Route path="/view-order/:order_id" element={<ViewOrderPage path="/" />} />
+          <Route path="/track-order" element={<TrackOrderPage path="/" />} />
+          <Route path="/reviews" element={<ReviewPage path="/" />} />
+          <Route path="/drop-review" element={<DropReviewPage path="/" />} />
+
+          <Route path="/faq" element={<Page404 path="/faq" />} />
+          <Route path="/articles" element={<Page404 path="/articles" />} />
 
 
-          <Route path="*" element={<Page404 />} />
+          <Route path="*" element={<Page404 path="/" />} />
         </Routes>
         <Footer />
         <MobileFooter />

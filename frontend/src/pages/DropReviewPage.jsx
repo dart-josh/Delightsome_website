@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useProductStore } from "../Hooks/useProductStore.jsx";
@@ -7,8 +8,9 @@ import Select from "react-select";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
 import RelatedProducts from "../components/RelatedProducts.jsx";
+import MetaWrap from "../utils/MetaWrap";
 
-const DropReviewPage = () => {
+const DropReviewPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
 
   // Set current page
@@ -18,6 +20,7 @@ const DropReviewPage = () => {
   }, [setCurrentPage]);
 
   return (
+    <MetaWrap path={path}>
     <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
       {/* Top bar */}
       <div className="hidden md:block">
@@ -40,6 +43,7 @@ const DropReviewPage = () => {
         <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} />
       </div>
     </div>
+    </MetaWrap>
   );
 };
 
