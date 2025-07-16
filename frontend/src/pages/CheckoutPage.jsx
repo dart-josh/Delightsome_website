@@ -8,11 +8,14 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import MetaWrap from "../utils/MetaWrap";
+import { fetch_image } from "../Hooks/serveruploader";
+import { useAuthStore } from "../store/authStore";
 
 const CheckoutPage = ({path}) => {
   const { setCurrentPage } = usePageHooks();
   const { cartProducts } = useProductStore();
   const { locationList } = useOrderHooks();
+  const {user} = useAuthStore();
 
   const navigate = useNavigate();
 
@@ -39,39 +42,39 @@ const CheckoutPage = ({path}) => {
   const save_order = async () => {
     if (!f_name.current.value) {
       f_name.current.focus();
-      return toast.error("Enter First name", { toastId: "error_1" });
+      return toast.error("Enter First name", { id: "error_1" });
     }
     if (!l_name.current.value) {
       l_name.current.focus();
-      return toast.error("Enter Last name", { toastId: "error_1" });
+      return toast.error("Enter Last name", { id: "error_1" });
     }
     if (!deliveryMethod) {
-      return toast.error("Select Delivery Method", { toastId: "error_1" });
+      return toast.error("Select Delivery Method", { id: "error_1" });
     }
     if (deliveryMethod === "Delivery" && !location) {
-      return toast.error("Select Location", { toastId: "error_1" });
+      return toast.error("Select Location", { id: "error_1" });
     }
     if (deliveryMethod === "Delivery") {
       if (!address_1.current.value) {
         address_1.current.focus();
-        return toast.error("Enter Street address", { toastId: "error_1" });
+        return toast.error("Enter Street address", { id: "error_1" });
       }
       if (!city.current.value) {
         city.current.focus();
-        return toast.error("Enter City", { toastId: "error_1" });
+        return toast.error("Enter City", { id: "error_1" });
       }
       if (!state.current.value) {
         state.current.focus();
-        return toast.error("Enter State", { toastId: "error_1" });
+        return toast.error("Enter State", { id: "error_1" });
       }
     }
     if (!phone.current.value) {
       phone.current.focus();
-      return toast.error("Enter Phone", { toastId: "error_1" });
+      return toast.error("Enter Phone", { id: "error_1" });
     }
     if (phone.current.value.length < 10 || phone.current.value.length > 11) {
       phone.current.focus();
-      return toast.error("Invalid Phone", { toastId: "error_1" });
+      return toast.error("Invalid Phone", { id: "error_1" });
     }
 
     const address =
@@ -107,22 +110,22 @@ const CheckoutPage = ({path}) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post("api/store/save_order", order);
+      const response = await axios.post("api/sales/save_order", order);
       setIsLoading(false);
       if (response.status === 200) {
-        toast.success("Order Sent", { toastId: "success_1" });
+        toast.success("Order Sent", { id: "success_1" });
 
         const order_id = response.data.order.orderId;
 
         // Go to order page
         navigate(`/view-order/${order_id}?new=true`);
       } else {
-        toast.error(response.message, { toastId: "error_1" });
+        toast.error(response.message, { id: "error_1" });
       }
     } catch (error) {
       setIsLoading(false);
       console.log("Error in save_order: ", error);
-      toast.error("Error in sending order", { toastId: "error_1" });
+      toast.error("Error sending order", { id: "error_1" });
     }
   };
 
@@ -151,6 +154,16 @@ const CheckoutPage = ({path}) => {
     } else setDelivery_fee(0);
   }, [deliveryMethod, location, locationList]);
 
+  // prefill details
+  useEffect(() => {
+    if (user) {
+      f_name.current.value = user.name.split(' ')[0] ?? '';
+      l_name.current.value = user.name.split(' ')[1] ?? '';
+      email.current.value = user.email;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <MetaWrap path={path}>
       <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
@@ -159,6 +172,8 @@ const CheckoutPage = ({path}) => {
           <div className="text-md mb-6 flex justify-between">
             <div className="flex gap-3">
               <Link to="/">Home</Link>
+              <span className="text-gray-400">/</span>
+              <Link to="/cart">Cart</Link>
               <span className="text-gray-400">/</span>
               <span className="text-gray-400">Checkout</span>
             </div>
@@ -232,6 +247,15 @@ const DeliveryDetails = ({
   function changeLocation(e) {
     setLocation(e.target.value);
   }
+  locationList.sort(function (a, b) {
+  if (a.location < b.location) {
+    return -1;
+  }
+  if (a.location > b.location) {
+    return 1;
+  }
+  return 0;
+});
 
   return (
     <div className="w-full pr-0 md:pr-7">
@@ -446,7 +470,7 @@ const OrderDetails = ({
             >
               {/* Product image */}
               <div className="w-[70px]">
-                <img src={image} alt="Product Image" />
+                <img src={fetch_image(image)} alt="Product Image" />
               </div>
 
               {/* details */}

@@ -28,6 +28,8 @@ import { useProductStore } from "../Hooks/useProductStore";
 import toast from "react-hot-toast";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import MetaWrap from "../utils/MetaWrap";
+import { fetch_image } from "../Hooks/serveruploader";
+import ReactMarkdown from "react-markdown";
 
 const ProductPage = ({ path }) => {
   const { id: link } = useParams();
@@ -45,13 +47,15 @@ const ProductPage = ({ path }) => {
 
   // Get product
   useEffect(() => {
-    const p = productList.filter((product) => {
-      if (product.link == link) {
-        return product;
-      }
-    });
+    if (productList) {
+      const p = productList.filter((product) => {
+        if (product.link == link) {
+          return product;
+        }
+      });
 
-    setProduct(p[0]);
+      setProduct(p[0]);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [productList, link]);
 
@@ -146,14 +150,15 @@ const ProductPage = ({ path }) => {
   // No product
   if (!product) {
     return (
-      <div className="flex w-full items-center justify-center">
+      <div className="xs:mx-5 relative mx-[10px] max-w-[1200px] justify-center pt-5 md:mx-auto md:px-5">
+      <div className="flex w-full items-center justify-center min-h-1/2">
         <div className="animate-spin">
           <LoaderPinwheel className="h-8 w-8 text-green-600" />
         </div>
       </div>
+      </div>
     );
   }
-
 
   return (
     <MetaWrap path={path}>
@@ -174,17 +179,22 @@ const ProductPage = ({ path }) => {
         {/* Product details */}
         <div>
           {/* Product name */}
-          <div className="mb-2 text-2xl font-bold">{product.name}</div>
+          <div className="mb-2 flex flex-col items-start gap-0 text-xl font-bold md:flex-row md:items-center md:gap-2 md:text-2xl">
+            {product.name}
+            <div className="text-lg font-semibold md:text-xl">
+              {product.slogan && "- " + product.slogan}
+            </div>
+          </div>
 
           {/* Ratings, reviews, social icons */}
           <div className="mb-6 flex flex-col gap-2 md:mb-8 md:flex-row md:items-center md:justify-between md:gap-0">
             {/* Rating */}
             <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
               <ProductRatings rating={product.averageRating || 0} />
-              <span className="text-[14px]">
+              {/* <span className="text-[14px]">
                 {(reviews && reviews.length > 0 && reviews.length) || 0}{" "}
                 customer reviews
-              </span>
+              </span> */}
             </div>
 
             {/* Social icons */}
@@ -230,16 +240,18 @@ const ProductPage = ({ path }) => {
                 {/* Product image */}
                 <div className="w-full">
                   <img
-                    src={product.images && product.images[activeImage]}
+                    src={
+                      product.images && fetch_image(product.images[activeImage])
+                    }
                     alt="Product Image"
                     className="w-full"
                   />
 
                   {/* Thumbnails */}
                   <div className="mt-5 flex w-full justify-center">
-                    {product.thumbnails &&
-                      product.thumbnails.map((thumbnail) => {
-                        const index = product.thumbnails.findIndex(
+                    {product.images &&
+                      product.images.map((thumbnail) => {
+                        const index = product.images.findIndex(
                           (e) => e == thumbnail,
                         );
                         const isActive = index == activeImage;
@@ -247,7 +259,7 @@ const ProductPage = ({ path }) => {
                           <img
                             onClick={() => setActiveImage(index)}
                             key={thumbnail}
-                            src={thumbnail}
+                            src={fetch_image(thumbnail)}
                             alt={index}
                             className={`h-[85px] w-[85px] transition-all duration-300 hover:opacity-100 ${isActive ? "cursor-not-allowed opacity-100" : "cursor-pointer opacity-50"}`}
                           />
@@ -273,9 +285,9 @@ const ProductPage = ({ path }) => {
                   </div>
 
                   {/* Short description */}
-                  <p className="w-full max-w-[600px] text-[15px]">
-                    {product.shortDescription}
-                  </p>
+                  <div className="w-full max-w-[600px] text-[15px]">
+                    <ReactMarkdown>{product.shortDescription}</ReactMarkdown>
+                  </div>
 
                   {/* Item quantity */}
                   <div className="mt-3 flex h-11 w-full max-w-[150px] items-center rounded-xl border border-gray-200 text-gray-700 md:mt-5">
@@ -318,7 +330,9 @@ const ProductPage = ({ path }) => {
                     {/* Buy now */}
                     <button
                       onClick={() => {
-                        toast.error("Not available", { toastId: "success1" });
+                        toast.error("Purchase from cart", {
+                          toastId: "success1",
+                        });
                       }}
                       className={`flex h-12 w-full items-center justify-center gap-3 rounded-md bg-orange-500 px-4 py-2 text-xl text-black transition-all duration-500 hover:bg-orange-600`}
                     >
@@ -338,19 +352,15 @@ const ProductPage = ({ path }) => {
 
               {/* Full description */}
               <div className="mt-14 w-full text-[15px] text-gray-700">
-                {(product.productCode == "DJJCBR" && <BR />) ||
-                  (product.productCode == "DJJCBS" && <BS />) ||
-                  (product.productCode == "DJJCFGJ" && <FGJ />) ||
-                  (product.productCode == "DJJCLMU" && <LMU />) ||
-                  (product.productCode == "DJSMFM" && <FM />) ||
-                  (product.productCode == "DJSMGB" && <GB />) || (
-                    <div className="flex w-full flex-col gap-4">
-                      {product.fullDescription &&
-                        product.fullDescription.map((paragraph, index) => (
-                          <p key={index}>{paragraph}</p>
-                        ))}
-                    </div>
-                  )}
+                {
+                  // (product.productCode == "DJJCBR" && <BR />) ||
+                  // (product.productCode == "DJJCBS" && <BS />) ||
+                  // (product.productCode == "DJJCFGJ" && <FGJ />) ||
+                  // (product.productCode == "DJJCLMU" && <LMU />) ||
+                  // (product.productCode == "DJSMFM" && <FM />) ||
+                  // (product.productCode == "DJSMGB" && <GB />) ||
+                  <FullDesc product={product} />
+                }
               </div>
 
               {/* Reviews */}
@@ -471,6 +481,87 @@ const ProductPage = ({ path }) => {
 };
 
 // Products Description
+function FullDesc({ product }) {
+  return (
+    <div>
+      {/* title */}
+      <div className="mb-2 font-bold">{product.introText}</div>
+
+      {/* p's */}
+      <div className="flex flex-col gap-4">
+        <div className="">
+          <ReactMarkdown>{product.shortDescription}</ReactMarkdown>
+        </div>
+
+        {product.fullDescription && (
+          <div className="">
+            <ReactMarkdown breaks>{product.fullDescription}</ReactMarkdown>
+          </div>
+        )}
+
+        <div>
+          {product.ingredients && product.ingredients.length > 0 && (
+            <div className="my-2 font-bold">Main Nutrients</div>
+          )}
+
+          <div className="ml-5 flex flex-col gap-0">
+            {product.ingredients.split(".").map((i, idx) => {
+              const ing_data = i.split(":");
+              if (ing_data.length > 0 && i)
+                return (
+                  <div key={idx} className="flex items-center gap-3">
+                    <Circle className="fill-gray-700" size={7} />
+                    <div>
+                      {
+                        <span className="font-bold">
+                          {ing_data[0]}
+                          {ing_data.length > 1 && ": "}
+                        </span>
+                      }
+                      {ing_data.length > 1 && <span>{ing_data[1]}.</span>}
+                    </div>
+                  </div>
+                );
+            })}
+          </div>
+        </div>
+
+        <div>
+          {product.healthBenefits && product.healthBenefits.length > 0 && (
+            <div className="my-2 font-bold">Health Benefits</div>
+          )}
+
+          <div className="ml-5 flex flex-col gap-0">
+            {product.healthBenefits.split(".").map((i, idx) => {
+              const ing_data = i.split(":");
+              if (ing_data.length > 0 && i)
+                return (
+                  <div key={idx} className="flex items-center gap-3">
+                    <Circle className="fill-gray-700" size={7} />
+                    <div>
+                      {
+                        <span className="font-bold">
+                          {ing_data[0]}
+                          {ing_data.length > 1 && ": "}
+                        </span>
+                      }
+                      {ing_data.length > 1 && <span>{ing_data[1]}.</span>}
+                    </div>
+                  </div>
+                );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <ReactMarkdown>{product.summaryText || ""}</ReactMarkdown>
+      </div>
+    </div>
+  );
+}
+
+//!
 // br
 function BR() {
   return (

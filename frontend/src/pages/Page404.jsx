@@ -18,7 +18,7 @@ const Page404 = ({path}) => {
       <div className="flex h-[60vh] flex-col items-center justify-center">
         <div className="m-7 text-4xl font-extrabold">404</div>
         <div className="mb-5 text-center font-semibold">
-          Oops, Seems like you hit a snag!
+          Page does not exist
         </div>
         <Link
           to={"/shop"}

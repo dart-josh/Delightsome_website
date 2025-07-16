@@ -3,22 +3,36 @@
 @tailwind utilities;
 
 @layer utilities {
-    .scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: rgba(190, 190, 190, 0.811);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(12, 133, 58, 0.6);
+    /* border-radius: 100vh; */
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(7, 81, 36, 0.87);
+  }
+
+  @keyframes scaleIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
     }
-  
-    .scrollbar::-webkit-scrollbar-track {
-      background: rgba(190, 190, 190, 0.811);
-      
-    }
-  
-    .scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(12, 133, 58, 0.6);
-      /* border-radius: 100vh; */
-    }
-  
-    .scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(7, 81, 36, 0.87);
+    100% {
+      opacity: 1;
+      transform: scale(1);
     }
   }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.2s ease-out;
+  }
+}

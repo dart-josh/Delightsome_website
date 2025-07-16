@@ -1,16 +1,18 @@
-const express = require("express");
-const { get_orders, mark_payment, save_order, view_order, send_contact_mail, drop_review, get_reviews } = require("../controllers/sales.controller.js");
+import express from "express";
+import {
+  get_products,
+  add_update_products,
+  find_product,
+  update_image,
+  delete_product,
+} from "../controllers/store.controller.js";
 
 const router = express.Router();
 
-router.get("/view_order/:id", view_order);
-router.get("/get_orders", get_orders);
-router.post("/save_order", save_order);
-router.post("/mark_payment/:id", mark_payment);
+router.get("/get_products", get_products);
+router.get("/find_product/:link", find_product);
+router.post("/add_update_products", add_update_products);
+router.post("/update_image", update_image);
+router.delete("/delete_product/:link", delete_product);
 
-router.get("/get_reviews/:id", get_reviews);
-router.post("/drop_review", drop_review);
-
-router.post("/send_contact_mail", send_contact_mail);
-
-module.exports = router;
+export default router;

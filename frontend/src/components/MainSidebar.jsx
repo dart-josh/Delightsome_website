@@ -91,7 +91,7 @@ const MainSidebar = () => {
     },
     {
       name: "My account",
-      link: "/my-account",
+      link: "/myaccount",
     },
     {
       name: "About Us",
@@ -112,10 +112,6 @@ const MainSidebar = () => {
     {
       name: "Contact",
       link: "/contact",
-    },
-    {
-      name: "LogOut",
-      link: "/log-out",
     },
   ];
 

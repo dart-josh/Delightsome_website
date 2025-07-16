@@ -7,8 +7,9 @@ import ProductRatings from "./ProductRatings";
 import { useProductStore } from "../Hooks/useProductStore";
 import { Link } from "react-router-dom";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
+import { fetch_image } from "../Hooks/serveruploader";
 
-const ProductTile = ({ product, tile_type }) => {
+const ProductTile = ({ product, tile_type, admin }) => {
   // LIST
   if (tile_type === "list")
     return (
@@ -49,19 +50,19 @@ const ProductTile = ({ product, tile_type }) => {
   return (
     <div className="group rounded-lg border border-transparent transition-all duration-500 hover:shadow-sm md:p-5 md:hover:border-gray-200">
       {/* Image */}
-      <Image product={product} />
+      <Image product={product} admin={admin} />
 
       {/* product name */}
-      <p className="text-md mb-3 mt-3 h-10">{product.name}</p>
+      <p className={`text-md ${admin ? 'mb-1' : 'mb-3'} mt-3 h-10`}>{product.name}</p>
 
       {/* Rating */}
-      <Ratings product={product} />
+      {!admin && <Ratings product={product} />}
 
       {/* Price */}
       <Price product={product} />
 
       {/* Add to cart */}
-      <AddToCartButton product={product} />
+      {!admin && <AddToCartButton product={product} />}
 
       <div className="h-3"></div>
     </div>
@@ -70,7 +71,12 @@ const ProductTile = ({ product, tile_type }) => {
 
 // WIDGETS
 // Image
-const Image = ({ product, additional_box_class, addtional_img_class }) => {
+const Image = ({
+  product,
+  additional_box_class,
+  addtional_img_class,
+  admin,
+}) => {
   const { likedProducts, updateLikedProducts } = useProductStore();
 
   const [isLiked, setIsLiked] = useState(false);
@@ -89,53 +95,58 @@ const Image = ({ product, additional_box_class, addtional_img_class }) => {
 
   return (
     <div className={"relative " + additional_box_class}>
-      <Link to={`/product/${product.link}`}>
+      <Link to={`/${admin ? "manage-product" : "product"}/${product.link}`}>
         <img
-          src={product.images && product.images[0]}
+          src={product.images && fetch_image(product.images[0])}
           alt={product.name}
-          className={`w-full ${addtional_img_class} ${product.images[0] == "/products/" ? "h-[200px]" : ""}`}
+          className={`w-full h-full ${addtional_img_class} ${product.images[0] == "/products/" ? "" : ""}`}
         />
       </Link>
+
       {/* Bottom hover */}
-      <div className="absolute bottom-0 left-0 hidden h-0 w-full items-center justify-around overflow-hidden bg-white transition-all duration-300 group-hover:h-11 md:flex">
-        <div
-          className="flex cursor-pointer flex-col items-center text-[13px]"
-          onClick={() => updateLikedProducts(product.id)}
-        >
+      {!admin && (
+        <div className="absolute bottom-0 left-0 hidden h-0 w-full items-center justify-around overflow-hidden bg-white transition-all duration-300 group-hover:h-11 md:flex">
+          <div
+            className="flex cursor-pointer flex-col items-center text-[13px]"
+            onClick={() => updateLikedProducts(product.id)}
+          >
+            <Heart
+              size={20}
+              className={isLiked ? "fill-red-500 stroke-red-500" : ""}
+            />
+            <span>Wishlist</span>
+          </div>
+          <div
+            onClick={() => toggleProductQuickView({ value: true, product })}
+            className="flex cursor-pointer flex-col items-center text-[13px]"
+          >
+            <Eye size={20} />
+            <span>Quickview</span>
+          </div>
+        </div>
+      )}
+      {/* Like button for smaller device */}
+      {!admin && (
+        <div className="absolute bottom-2 left-2 flex md:hidden">
           <Heart
             size={20}
-            className={isLiked ? "fill-red-500 stroke-red-500" : ""}
+            className={
+              "cursor-pointer" + (isLiked ? " fill-red-500 stroke-red-500" : "")
+            }
+            onClick={() => updateLikedProducts(product.id)}
           />
-          <span>Wishlist</span>
         </div>
-        <div
-          onClick={() => toggleProductQuickView({ value: true, product })}
-          className="flex cursor-pointer flex-col items-center text-[13px]"
-        >
-          <Eye size={20} />
-          <span>Quickview</span>
-        </div>
-      </div>
-
-      {/* Like button for smaller device */}
-      <div className="absolute bottom-2 left-2 flex md:hidden">
-        <Heart
-          size={20}
-          className={
-            "cursor-pointer" + (isLiked ? " fill-red-500 stroke-red-500" : "")
-          }
-          onClick={() => updateLikedProducts(product.id)}
-        />
-      </div>
-
+      )}
       {/* Quickview button for smaller device */}
-      <div className="absolute bottom-2 right-2 flex md:hidden">
-        <Eye
-          onClick={() => toggleProductQuickView({ value: true, product })}
-          size={22}
-          className={"cursor-pointer"}
-        />
-      </div>
+      {(
+        <div className={`absolute bottom-2 right-2 flex ${admin ? '' : 'md:hidden'}`}>
+          <Eye
+            onClick={() => toggleProductQuickView({ value: true, product })}
+            size={22}
+            className={"cursor-pointer"}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -245,14 +256,15 @@ const Ratings = ({ product }) => {
 
   // pgae title
   useEffect(() => {
-
     get_reviews(product.name);
   }, [product]);
 
   return (
     <div className="mb-2 flex items-center gap-0.5">
       <ProductRatings rating={product.averageRating} />
-      <span className="pl-1 text-[14px]">{reviews && reviews.length > 0 && reviews.length || 0}</span>
+      {/* <span className="pl-1 text-[14px]">
+        {(reviews && reviews.length > 0 && reviews.length) || 0}
+      </span> */}
     </div>
   );
 };

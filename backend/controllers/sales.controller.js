@@ -1,9 +1,10 @@
-const { nanoid } = require("nanoid");
-const SalesRecord = require("../models/sales.model.js");
-const Review = require("../models/review.model.js");
-var nodemailer = require("nodemailer");
+import { nanoid } from "nanoid";
+import SalesRecord from "../models/sales.model.js";
+import Review from "../models/review.model.js";
+import nodemailer from "nodemailer";
+import { sendContactEmail, sendNewOrderEmail } from "../mailtrap/emails.js";
 
-const save_order = async (req, res) => {
+export const save_order = async (req, res) => {
   // get values from body
   const {
     products,
@@ -80,7 +81,7 @@ const save_order = async (req, res) => {
     res.json({ message: "Order Sent", order });
 
     const message = `
-      <h1>New Order</h1>
+      
       <p>Order ID: ${orderId}</p>
       <p>Customer Name: ${customerName}</p>
       <p>Customer Phone: ${customerPhone}</p>
@@ -109,12 +110,16 @@ const save_order = async (req, res) => {
       </ul>
     `;
 
-    send_email(
-      "order@delightsomejuice.com",
-      "info@delightsomejuice.com",
-      "New Order",
-      message,
-    );
+    const orderUrl = process.env.CLIENT_URL + "/view-order/" + orderId;
+
+    sendNewOrderEmail("order@delightsomejuice.com", message, orderUrl);
+
+    // send_email(
+    //   "order@delightsomejuice.com",
+    //   "info@delightsomejuice.com",
+    //   "New Order",
+    //   message,
+    // );
   } catch (error) {
     console.log("Error in save_order: ", error.message);
     res
@@ -123,7 +128,7 @@ const save_order = async (req, res) => {
   }
 };
 
-const send_contact_mail = async (req, res) => {
+export const send_contact_mail = async (req, res) => {
   const { fullname, email, subject, message } = req.body;
 
   if (!fullname || !email || !subject) {
@@ -139,12 +144,14 @@ const send_contact_mail = async (req, res) => {
   `;
 
   try {
-    send_email(
-      "info@delightsomejuice.com",
-      "info@delightsomejuice.com",
-      `From Website- ${subject}`,
-      htmlMessage,
-    );
+    await sendContactEmail("info@delightsomejuice.com", htmlMessage);
+
+    // send_email(
+    //   "info@delightsomejuice.com",
+    //   "info@delightsomejuice.com",
+    //   `From Website- ${subject}`,
+    //   htmlMessage,
+    // );
 
     res.json({ message: "Message sent successfully" });
   } catch (error) {
@@ -153,7 +160,20 @@ const send_contact_mail = async (req, res) => {
   }
 };
 
-const view_order = async (req, res) => {
+export const get_all_orders = async (req, res) => {
+  try {
+    const orders = await SalesRecord.find({});
+
+    res.json({ orders });
+  } catch (error) {
+    console.log("Error in get_all_orders: ", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal Server error", error: error.message });
+  }
+};
+
+export const view_order = async (req, res) => {
   const { id: orderId } = req.params;
 
   if (!orderId) {
@@ -176,7 +196,7 @@ const view_order = async (req, res) => {
   }
 };
 
-const mark_payment = async (req, res) => {
+export const mark_payment = async (req, res) => {
   const { id: orderId } = req.params;
 
   if (!orderId) {
@@ -211,7 +231,7 @@ const mark_payment = async (req, res) => {
   }
 };
 
-const get_orders = async (req, res) => {
+export const get_orders = async (req, res) => {
   try {
     const record = await SalesRecord.find({});
     res.json({ record });
@@ -223,7 +243,7 @@ const get_orders = async (req, res) => {
   }
 };
 
-const get_reviews = async (req, res) => {
+export const get_reviews = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -248,7 +268,7 @@ const get_reviews = async (req, res) => {
   }
 };
 
-const drop_review = async (req, res) => {
+export const drop_review = async (req, res) => {
   // get values from body
   const { products, reviewText, name } = req.body;
 
@@ -283,7 +303,7 @@ const drop_review = async (req, res) => {
 };
 
 // generate record Id
-const generate_record_id = () => {
+export const generate_record_id = () => {
   return "" + nanoid(11);
 };
 
@@ -312,15 +332,4 @@ const send_email = async (to, from, subject, message) => {
       return true;
     }
   });
-};
-
-module.exports = {
-  save_order,
-  view_order,
-  mark_payment,
-  get_orders,
-  generate_record_id,
-  send_contact_mail,
-  drop_review,
-  get_reviews,
 };

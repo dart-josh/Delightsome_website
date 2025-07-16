@@ -7,7 +7,6 @@ import {
   List,
   Mail,
   Phone,
-  RotateCcw,
   ShoppingCart,
   Twitter,
 } from "lucide-react";
@@ -52,16 +51,7 @@ export const MobileFooter = () => {
         </Link>
 
         <Link
-          to={"/viewed"}
-          onClick={() => setCurrentPage("Viewed")}
-          className={`flex cursor-pointer flex-col items-center transition duration-300 hover:scale-110 hover:text-green-800 ${currentPage === "Viewed" ? "scale-110 text-green-800" : ""}`}
-        >
-          <RotateCcw size={20} />
-          <span>Viewed</span>
-        </Link>
-
-        <Link
-          to={"/my-account"}
+          to={"/myaccount"}
           onClick={() => setCurrentPage("My Account")}
           className={`flex cursor-pointer flex-col items-center transition duration-300 hover:scale-110 hover:text-green-800 ${currentPage === "My Account" ? "scale-110 text-green-800" : ""}`}
         >

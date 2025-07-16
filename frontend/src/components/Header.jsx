@@ -18,11 +18,13 @@ import { useSidebarHooks, usePageHooks } from "../Hooks/useGeneralHooks";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../Hooks/useProductStore";
+import { fetch_image } from "../Hooks/serveruploader";
+import { useAuthStore } from "../store/authStore";
 
 export const MobileHeader = () => {
   const { openMainSidebar } = useSidebarHooks();
-  const { currentPage } = usePageHooks();
-  const { productList, likedProducts } = useProductStore();
+  const { currentPage, setCurrentPage } = usePageHooks();
+  const { productList, likedProducts, cartProducts } = useProductStore();
 
   const inputRef = useRef();
 
@@ -127,7 +129,7 @@ export const MobileHeader = () => {
         </div>
 
         {/* logo */}
-        <div className="font-semibold">
+        <div className="font-semibold text-center">
           {currentPage == "Home" ? (
             <Link
               to={"/"}
@@ -148,6 +150,27 @@ export const MobileHeader = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-5 text-gray-700">
+
+          {/* User Profile */}
+          <div className="md:flex hidden">
+            <UserArea />
+          </div>
+
+          <div className="md:flex items-center hidden">
+            <Link
+            to={"/cart"}
+            className="group relative cursor-pointer transition-all duration-300 hover:text-green-600"
+            onClick={() => setCurrentPage("Cart")}
+          >
+            <div className="absolute -right-[9px] -top-[9px] flex h-[21px] w-[21px] items-center justify-center rounded-full border-2 border-white bg-orange-500 text-[12px] font-semibold transition-all duration-300 group-hover:scale-125 group-hover:bg-orange-600 group-hover:text-white">
+              {cartProducts.length}
+            </div>
+            <ShoppingCart size={22} />
+          </Link>
+          </div>
+
+          
+
           {/* Wishlist */}
           <Link
             to={"/wishlist"}
@@ -255,7 +278,7 @@ export const MobileHeader = () => {
                 onClick={() => selectProduct(product)}
               >
                 <img
-                  src={product.images && product.images[0]}
+                  src={product.images && fetch_image(product.images[0])}
                   alt="Product image"
                   className="max-w-[60px]"
                 />
@@ -355,6 +378,7 @@ export const MainHeader = () => {
     </header>
   );
 };
+
 
 const SearchArea = ({
   inputFocused,
@@ -506,7 +530,7 @@ const SearchArea = ({
                 onClick={() => selectProduct()}
               >
                 <img
-                  src={product.images && product.images[0]}
+                  src={product.images && fetch_image(product.images[0])}
                   alt="Product image"
                   className="max-w-[60px]"
                 />
@@ -540,16 +564,18 @@ const OnlineShopping = () => {
 };
 
 const UserArea = () => {
+  const { user } = useAuthStore();
+
   return (
     <Link
-      to={"/sign-in"}
-      className="flex cursor-pointer items-center gap-2 text-black"
+      to={"/myaccount"}
+      className="flex cursor-pointer items-center gap-0.5 lg:gap-2 text-black"
     >
       <User2 strokeWidth={0} className="fill-green-700" size={32} />
 
       <div className="flex flex-col gap-2 leading-none">
-        <span className="max-w-[50px] text-[18px] font-bold">Your Account</span>
-        <span className="min-w-[110px] text-[14px]">Login / Register</span>
+        <span className="max-w-[80px] text-[18px] font-bold">{user ? user?.name : 'Your Account'}</span>
+        {<span className="min-w-[110px] text-[14px] hidden lg:flex">{user ? 'View account' : 'Login / Register'}</span>}
       </div>
     </Link>
   );
@@ -660,7 +686,7 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
                     onClick={() => setCartAreaOpen(false)}
                   >
                     <img
-                      src={image}
+                      src={fetch_image(image)}
                       alt="Product Image"
                       width={60}
                       height={0}

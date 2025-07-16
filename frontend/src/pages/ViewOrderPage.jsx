@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useGeneralHooks, usePageHooks } from "../Hooks/useGeneralHooks";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useProductStore } from "../Hooks/useProductStore";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { Container, Copy, Loader, Store } from "lucide-react";
 import toast from "react-hot-toast";
 import MetaWrap from "../utils/MetaWrap";
 
-const ViewOrderPage = ({path}) => {
+const ViewOrderPage = ({ path }) => {
   const { setCurrentPage } = usePageHooks();
   const { clearCart } = useProductStore();
   const { getOrderDetails, refresh_order } = useOrderHooks();
@@ -16,10 +16,11 @@ const ViewOrderPage = ({path}) => {
   const { formatDate, formatAmount } = useGeneralHooks();
 
   let { order_id } = useParams();
+  const [searchParams] = useSearchParams();
 
   // get query params
-  const query = new URLSearchParams(window.location.search);
-  const status = query.get("new");
+  const status = searchParams.get("new");
+  const id = searchParams.get("id");
 
   const [order, setOrder] = useState(null);
 
@@ -51,69 +52,73 @@ const ViewOrderPage = ({path}) => {
 
   return (
     <MetaWrap path={path}>
-    <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
-      {/* Top bar */}
-      <div className="hidden md:block">
-        <div className="text-md mb-6 flex justify-between">
-          <div className="flex gap-3">
-            <Link to="/">Home</Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-400">My Order</span>
+      <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
+        {/* Top bar */}
+        <div className="block">
+          <div className="text-md mb-6 flex justify-between">
+            <div className="flex gap-3">
+              <Link to={id === "admin" ? "/dashboard" : "/"}>Home</Link>
+              <span className="text-gray-400">/</span>
+              {id === "admin" && (
+                <Link to={"/all-orders"}>Orders</Link>
+              )}
+              {id === "admin" && <span className="text-gray-400">/</span>}
+              <span className="text-gray-400">My Order</span>
+            </div>
           </div>
+
+          {/* Page Title */}
+          <div className="mb-8 text-2xl font-bold">Order Details</div>
         </div>
 
-        {/* Page Title */}
-        <div className="mb-8 text-2xl font-bold">Order Details</div>
-      </div>
+        {(order != null && (
+          <div className="flex w-full flex-col gap-0 md:flex-row md:gap-14">
+            <div className="w-full">
+              <OrderSummary
+                order={order}
+                formatDate={formatDate}
+                formatAmount={formatAmount}
+              />
 
-      {(order != null && (
-        <div className="flex w-full flex-col gap-0 md:flex-row md:gap-14">
-          <div className="w-full">
-            <OrderSummary
-              order={order}
-              formatDate={formatDate}
-              formatAmount={formatAmount}
-            />
+              <div className="block md:hidden">
+                <div className="mb-4 mt-4 text-sm font-medium text-gray-700">
+                  PRODUCTS IN YOUR ORDER
+                </div>
 
-            <div className="block md:hidden">
+                <ProductDetails order={order} formatDate={formatDate} />
+              </div>
+
               <div className="mb-4 mt-4 text-sm font-medium text-gray-700">
+                PAYMENT INFORMATION
+              </div>
+
+              <PaymentDetails order={order} formatAmount={formatAmount} />
+
+              <div className="mb-4 mt-4 text-sm font-medium text-gray-700">
+                DELIVERY INFORMATION
+              </div>
+
+              <DeliveryDetails order={order} />
+            </div>
+
+            <div className="hidden w-full md:block">
+              <div className="mb-4 text-sm font-medium text-gray-700">
                 PRODUCTS IN YOUR ORDER
               </div>
 
               <ProductDetails order={order} formatDate={formatDate} />
             </div>
-
-            <div className="mb-4 mt-4 text-sm font-medium text-gray-700">
-              PAYMENT INFORMATION
-            </div>
-
-            <PaymentDetails order={order} formatAmount={formatAmount} />
-
-            <div className="mb-4 mt-4 text-sm font-medium text-gray-700">
-              DELIVERY INFORMATION
-            </div>
-
-            <DeliveryDetails order={order} />
           </div>
-
-          <div className="hidden w-full md:block">
-            <div className="mb-4 text-sm font-medium text-gray-700">
-              PRODUCTS IN YOUR ORDER
-            </div>
-
-            <ProductDetails order={order} formatDate={formatDate} />
+        )) || (
+          <div className="flex h-full w-full justify-center text-center">
+            {(isLoading && (
+              <div className="size-6 animate-spin">
+                <Loader />
+              </div>
+            )) || <div>Order not Found</div>}{" "}
           </div>
-        </div>
-      )) || (
-        <div className="flex h-full w-full justify-center text-center">
-          {(isLoading && (
-            <div className="size-6 animate-spin">
-              <Loader />
-            </div>
-          )) || <div>Order not Found</div>}{" "}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </MetaWrap>
   );
 };
@@ -123,16 +128,18 @@ const OrderSummary = ({ order, formatDate, formatAmount }) => {
   return (
     <div className="w-full rounded-sm bg-gray-100 p-4">
       {/* Order ID */}
-      <div className="text-md mb-2 font-semibold flex gap-3">
-        <div>Order ID<sup>o</sup> {order.orderId}</div>
-        <button 
-  onClick={() =>  {
-    navigator.clipboard.writeText(order.orderId);
-    toast('Order ID copied');
-  }}
->
-  <Copy size={16} />
-</button>
+      <div className="text-md mb-2 flex gap-3 font-semibold">
+        <div>
+          Order ID<sup>o</sup> {order.orderId}
+        </div>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(order.orderId);
+            toast("Order ID copied");
+          }}
+        >
+          <Copy size={16} />
+        </button>
       </div>
 
       {/* status */}
@@ -176,7 +183,7 @@ const PaymentDetails = ({ order, formatAmount }) => {
             Products total: {formatAmount(order.orderCost)}
           </div>
           <div className="">
-            Delivery Fees: {formatAmount(order.deliveryFee)}
+            Delivery Fee: {formatAmount(order.deliveryFee)}
           </div>
           <div className="font-semibold">
             Total cost: {formatAmount(order.totalCost)}
@@ -278,12 +285,12 @@ const DeliveryDetails = ({ order }) => {
       </div>
 
       {/* Addition details */}
-      {order.shortNote && <div className="mb-2 border-b border-gray-200 pb-2">
-        <div className="text-md font-semibold">Additional Details</div>
-        <div className="text-sm text-gray-600">
-          {order.shortNote}
+      {order.shortNote && (
+        <div className="mb-2 border-b border-gray-200 pb-2">
+          <div className="text-md font-semibold">Additional Details</div>
+          <div className="text-sm text-gray-600">{order.shortNote}</div>
         </div>
-      </div>}
+      )}
     </div>
   );
 };

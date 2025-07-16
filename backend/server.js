@@ -1,12 +1,22 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const { connectDB } = require("./utils/db.js").default;
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { connectDB } from "./utils/db.js";
 
-const storeRoutes = require("./routes/store.route.js");
-const { app, server } = require("./socket/socket.js");
+import storeRoutes from "./routes/store.route.js";
+import salesRoutes from "./routes/sales.route.js";
+import uploadRoutes from "./routes/upload.route.js";
+import authRoutes from "./routes/auth.route.js";
+import cors from "cors";
+import path from "path";
+import { fetchImage } from "./utils/ImageManager.js";
 
-const cors = require("cors");
-const path = require("path");
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
 
 app.use(
   cors({
@@ -31,9 +41,15 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json()); // allows you to parse json from req.body
+app.use(cookieParser()); // allows us to parse incoming cookies
 
 // ROUTES
+app.use("/api/auth", authRoutes);
 app.use("/api/store", storeRoutes);
+app.use("/api/sales", salesRoutes);
+app.use("/api/upload", uploadRoutes);
+
+app.use("/products/:filename", fetchImage);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
@@ -43,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // LISTENER
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log("Server started on port", PORT);
   connectDB();
 });

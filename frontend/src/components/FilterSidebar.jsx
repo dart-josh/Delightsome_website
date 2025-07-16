@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePageHooks, useSidebarHooks } from "../Hooks/useGeneralHooks";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../Hooks/useProductStore";
+import { fetch_image } from "../Hooks/serveruploader";
 
 const FilterSidebar = ({ additionalClasses }) => {
   const [priceRange, setPriceRange] = useState([1500, 10000]);
@@ -49,10 +50,10 @@ const FilterSidebar = ({ additionalClasses }) => {
       {/* Category */}
       <div className="flex flex-col gap-5">
         <p className="font-bold">Product categories</p>
-        {categoryList.map((category) => (
+        {categoryList.map((category, idx) => (
           <Link
             to={`${category == "View All" ? `/shop` : `/product-category/${category}`}`}
-            key={category}
+            key={idx}
             onClick={() => closeFilterSidebar(false)}
           >
             <p className="cursor-pointer">{category}</p>
@@ -88,11 +89,11 @@ const FilterSidebar = ({ additionalClasses }) => {
         <h4 className="font-bold">Product tags</h4>
         <ul className="flex-wrap">
           {tagList.map(
-            (tag) =>
+            (tag, idx) =>
               (
                 <Link
                   to={`/product-tag/${tag}`}
-                  key={tag}
+                  key={idx}
                   onClick={() => closeFilterSidebar(false)}
                 >
                   <div className="mb-3 mr-3 inline-flex cursor-pointer rounded-xl bg-gray-200 px-4 py-[3px] text-[14px] text-gray-800 transition-all duration-300 hover:bg-gray-300">
@@ -108,14 +109,14 @@ const FilterSidebar = ({ additionalClasses }) => {
       <div className="flex flex-col gap-4 border-t border-gray-300 py-8">
         <h4 className="font-bold">Products</h4>
         <ul className="flex flex-col">
-          {featuredProducts.map((product) => (
-            <Link key={product.id} to={`/product/${product.link}`} onClick={() => closeFilterSidebar(false)}>
+          {featuredProducts && featuredProducts.length > 0 && featuredProducts.map((product, idx) => (
+            <Link key={idx} to={`/product/${product.link}`} onClick={() => closeFilterSidebar(false)}>
             <div
               
               className="mb-4 flex cursor-pointer gap-4 text-[15px]"
             >
               <img
-                src={product.images && product.images[0]}
+                src={product.images && fetch_image(product.images[0])}
                 alt="Product image"
                 className="max-w-[70px]"
               />
@@ -145,8 +146,8 @@ function RangeSlider({ value, setValue }) {
     <TwoThumbInputRange
       onChange={onValueChange}
       values={value}
-      min={1500}
-      max={10000}
+      min={1000}
+      max={20000}
       thumbColor="#2d7b3b"
       trackColor="#2d7b3b"
       showLabels={false}

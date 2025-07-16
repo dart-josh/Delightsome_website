@@ -20,6 +20,8 @@ import ProductRatings from "./ProductRatings";
 import { useProductStore } from "../Hooks/useProductStore";
 import { useNavigate } from "react-router-dom";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
+import { fetch_image } from "../Hooks/serveruploader";
+import ReactMarkdown from "react-markdown";
 
 const ProductQuickView = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -132,8 +134,7 @@ const ProductQuickView = () => {
 
   // pgae title
   useEffect(() => {
-    if (quickViewProduct)
-    get_reviews(quickViewProduct.name);
+    if (quickViewProduct) get_reviews(quickViewProduct.name);
   }, [quickViewProduct]);
 
   if (!quickViewProduct) {
@@ -165,8 +166,11 @@ const ProductQuickView = () => {
           {/* Product details */}
           <div className="scrollbar relative h-full w-full overflow-y-scroll px-5 py-5 md:px-10 md:py-8">
             {/* Product name */}
-            <div className="mb-2 text-2xl font-bold">
+            <div className="mb-2 flex flex-col items-start gap-0 text-xl font-bold md:flex-row md:items-center md:gap-2 md:text-2xl">
               {quickViewProduct.name}
+              <div className="text-lg font-semibold md:text-xl">
+                {quickViewProduct.slogan && "- " + quickViewProduct.slogan}
+              </div>
             </div>
 
             {/* Ratings, reviews, social icons */}
@@ -174,7 +178,8 @@ const ProductQuickView = () => {
               <div className="xs:flex-row xs:items-center xs:gap-2 flex flex-col">
                 <ProductRatings rating={quickViewProduct.averageRating} />
                 <span className="text-[14px]">
-                {reviews && reviews.length > 0 && reviews.length || 0} customer reviews
+                  {(reviews && reviews.length > 0 && reviews.length) || 0}{" "}
+                  customer reviews
                 </span>
               </div>
 
@@ -206,7 +211,10 @@ const ProductQuickView = () => {
             <div className="flex w-full flex-col gap-8 md:flex-row md:gap-14">
               <div className="w-full">
                 <img
-                  src={quickViewProduct.images && quickViewProduct.images[0]}
+                  src={
+                    quickViewProduct.images &&
+                    fetch_image(quickViewProduct.images[0])
+                  }
                   alt="Product Image"
                   className="w-full"
                 />
@@ -214,13 +222,13 @@ const ProductQuickView = () => {
 
               <div className="flex w-full flex-col gap-2">
                 <div className="mb-2 flex w-full items-center justify-between">
-                  <p className="text-[20px] font-semibold text-red-500">
+                  <div className="text-[20px] font-semibold text-red-500">
                     ₦
                     {(quickViewProduct.price &&
                       quickViewProduct.price.toLocaleString()) ||
                       0}
                     .00
-                  </p>
+                  </div>
 
                   <Heart
                     size={20}
@@ -229,9 +237,11 @@ const ProductQuickView = () => {
                   />
                 </div>
 
-                <p className="w-full max-w-[600px] text-[15px]">
-                  {quickViewProduct.shortDescription}
-                </p>
+                <div className="w-full max-w-[600px] text-[15px]">
+                  <ReactMarkdown>
+                    {quickViewProduct.shortDescription}
+                  </ReactMarkdown>
+                </div>
 
                 {/* view more */}
                 <div
@@ -282,7 +292,9 @@ const ProductQuickView = () => {
                   {/* Buy now */}
                   <button
                     onClick={() => {
-                      toast.error("Not available", { toastId: "success1" });
+                      toast.error("Purchase from cart", {
+                        toastId: "success1",
+                      });
                     }}
                     className={`flex h-12 w-full max-w-[250px] items-center justify-center gap-3 rounded-md bg-orange-500 px-4 py-2 text-xl text-black transition-all duration-500 hover:bg-orange-600 md:max-w-full`}
                   >
@@ -317,7 +329,7 @@ const ProductQuickView = () => {
             {/* Buy now */}
             <div
               onClick={() => {
-                toast.error("Not available", { toastId: "success1" });
+                toast.error("Purchase from cart", { toastId: "success1" });
               }}
               className="flex h-full w-full cursor-pointer items-center justify-center gap-2 bg-orange-500 text-black transition-all duration-500 hover:bg-orange-600"
             >

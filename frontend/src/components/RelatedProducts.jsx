@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useProductStore } from "../Hooks/useProductStore";
 import { Link } from "react-router-dom";
+import { fetch_image } from "../Hooks/serveruploader";
 
 const RelatedProducts = ({ product, additionalClasses }) => {
   const { getRelatedProducts, relatedProducts } = useProductStore();
@@ -60,10 +61,14 @@ const RelatedProducts = ({ product, additionalClasses }) => {
 
   // set products to view
   const setActiveProducts = (index) => {
-    if (bigScreen || mobileView) {
-      setProductsToDisplay(relatedProducts.slice(index * 3, 3 * (index + 1)));
+    if (relatedProducts.length < 3) {
+      setProductsToDisplay(relatedProducts);
     } else {
-      setProductsToDisplay(relatedProducts.slice(index * 6, 6 * (index + 1)));
+      if (bigScreen || mobileView) {
+        setProductsToDisplay(relatedProducts.slice(index * 3, 3 * (index + 1)));
+      } else {
+        setProductsToDisplay(relatedProducts.slice(index * 6, 6 * (index + 1)));
+      }
     }
   };
 
@@ -90,7 +95,7 @@ const RelatedProducts = ({ product, additionalClasses }) => {
     >
       {/* Title */}
       <div className="flex items-center justify-between border-b pb-3 font-semibold">
-        <span>{product ? 'Related products' : 'Featured products'}</span>
+        <span>{product ? "Related products" : "Featured products"}</span>
         <div className="flex items-center">
           <ChevronLeft
             className={`cursor-pointer transition-all duration-300 ${activeSlide <= minSlide ? "cursor-not-allowed opacity-30" : "cursor-pointer hover:text-green-700"}`}
@@ -110,14 +115,14 @@ const RelatedProducts = ({ product, additionalClasses }) => {
       {/* products */}
       <div className={`flex-wrap transition-all duration-300 lg:flex-col`}>
         {products_to_display &&
-          products_to_display.map((product) => (
+          products_to_display.map((product, idx) => (
             <Link
               to={`/product/${product.link}`}
-              key={product.id}
+              key={idx}
               className={`mr-5 inline-flex min-w-full cursor-pointer gap-4 border-b py-4 text-[15px] sm:min-w-[250px] lg:min-w-full`}
             >
               <img
-                src={product.images && product.images[0]}
+                src={product.images && fetch_image(product.images[0])}
                 alt="Product image"
                 className="max-w-[50px]"
               />

@@ -1,8 +1,14 @@
 import { create } from "zustand";
-import temp_product_database from "./temp_database";
+import { get_products } from "./serverHooks";
 
 export const useProductStore = create((set, get) => ({
-  productList: temp_product_database,
+  productList: [],
+  updateProductList: async () => {
+    const products = await get_products();
+    console.log('Store updated')
+
+    set({productList: products});
+  },
 
   likedProducts: [],
 
@@ -13,13 +19,13 @@ export const useProductStore = create((set, get) => ({
   relatedProducts: [],
 
   categoryList: [
-    { cat: "Granola", banner: "" },
-    { cat: "Honey", banner: "" },
     { cat: "Juice", banner: "/category/juice-web.jpg" },
-    { cat: "Parfait", banner: "" },
     { cat: "Smoothies", banner: "/category/smoothies-web.jpg" },
     { cat: "Tigernut", banner: "/category/tigernut-web.jpg" },
     { cat: "Yoghurt", banner: "" },
+    { cat: "Parfait", banner: "" },
+    { cat: "Granola", banner: "" },
+    { cat: "Honey", banner: "" },
     { cat: "View All", banner: "" },
   ],
 
@@ -27,14 +33,18 @@ export const useProductStore = create((set, get) => ({
   updateFeaturedProducts: () => {
     let tempP = [];
     set((state) => {
-      for (let i = 0; i < 3; i++) {
-        let randomIndex = Math.floor(Math.random() * state.productList.length);
-        {
-          tempP = [...tempP, state.productList[randomIndex]];
+      if (state.productList && state.productList.length > 0) {
+        for (let i = 0; i < 3; i++) {
+          let randomIndex = Math.floor(
+            Math.random() * state.productList.length,
+          );
+          {
+            tempP = [...tempP, state.productList[randomIndex]];
+          }
         }
-      }
 
-      return { featuredProducts: tempP };
+        return { featuredProducts: tempP };
+      } else return { featuredProducts: [] };
     });
   },
 

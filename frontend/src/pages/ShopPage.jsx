@@ -64,7 +64,7 @@ const ShopPage = ({ path }) => {
     });
 
     setCategorizedProducts(tempP);
-  }, [param, tag, category]);
+  }, [param, tag, category, productList]);
 
   // Apply sort
   useEffect(() => {
@@ -142,7 +142,7 @@ const ShopPage = ({ path }) => {
   }, [currentPage, category]);
 
   // meta details
-  const meta = category === 'Yoghurt' ? '/yoghurt' : path;
+  const meta = category === "Yoghurt" ? "/yoghurt" : path;
 
   return (
     <MetaWrap path={meta}>
@@ -247,13 +247,15 @@ const ShopPage = ({ path }) => {
               >
                 {productsToView
                   .slice((currentPage - 1) * 12, currentPage * 12)
-                  .map((product) => {
+                  .map((product, idx) => {
                     return (
-                      <ProductTile
-                        tile_type={deafultTile_type}
-                        key={product.id}
-                        product={product}
-                      />
+                      <div key={idx}>
+                        <ProductTile
+                          tile_type={deafultTile_type}
+                          key={product.id}
+                          product={product}
+                        />
+                      </div>
                     );
                   })}
               </div>

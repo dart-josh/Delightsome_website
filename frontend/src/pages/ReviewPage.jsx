@@ -49,11 +49,11 @@ const ReviewPage = ({path}) => {
 
       <div className="flex w-full flex-col justify-center gap-x-40 gap-y-12 lg:flex-row">
         {/* All reviews */}
-        <div className="w-full">
+        <div className="w-full md:w-[70%] lg:w-[50%]">
           <div>
             <Link
               to={`/drop-review`}
-              className="mb-10 flex items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
+              className="mb-10 flex w-[200px] items-center gap-2 rounded-[4px] border border-gray-400 bg-gray-200 px-4 py-[6px] text-[15px] text-gray-600 transition-all duration-300 hover:border-green-800 hover:bg-transparent hover:text-green-600"
             >
               <PenBox size={18} /> <span>Leave us a Review</span>
             </Link>

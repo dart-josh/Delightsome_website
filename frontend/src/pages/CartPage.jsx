@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Delete, Minus, Plus } from "lucide-react";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
 import MetaWrap from "../utils/MetaWrap";
+import { fetch_image } from "../Hooks/serveruploader";
 
 const CartPage = ({ path }) => {
   const { cartProducts, updateCart, removeFromCart } = useProductStore();
@@ -78,7 +79,7 @@ const CartPage = ({ path }) => {
                         className="w-[130px] md:w-[70px]"
                       >
                         <img
-                          src={image}
+                          src={fetch_image(image)}
                           alt="Product Image"
                           // className="h-full object-cover"
                           // width={60}

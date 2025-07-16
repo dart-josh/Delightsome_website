@@ -1,17 +1,26 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+// eslint-disable-next-line no-undef
+const dev_mode = process.env.NODE_ENV === "development";
+
+const server_prefix = dev_mode ? "http://localhost:5000" : "";
 
 export const useOrderHooks = create((set, get) => ({
   locationList: [
     { location: "Lagos", price: 6000 },
     { location: "Ikorodu", price: 2000 },
+    { location: "Agric", price: 3000 },
+    { location: "Itamaga", price: 3000 },
+    { location: "Elepe", price: 5000 },
     { location: "Maryland", price: 3500 },
   ],
 
+  all_orders: [],
+
   getReviews: async (product) => {
     try {
-      const response = await axios.get(`/api/store/get_reviews/${product}`);
+      const response = await axios.get(`${server_prefix}/api/sales/get_reviews/${product}`);
       if (response.status == 200) return response.data.reviews;
 
       return null;
@@ -23,7 +32,7 @@ export const useOrderHooks = create((set, get) => ({
 
   getOrderDetails: async (order_id) => {
     try {
-      const response = await axios.get(`/api/store/view_order/${order_id}`);
+      const response = await axios.get(`${server_prefix}/api/sales/view_order/${order_id}`);
       if (response.status == 200) return response.data.order;
     } catch (error) {
       console.log(error);
@@ -31,10 +40,21 @@ export const useOrderHooks = create((set, get) => ({
       return null;
     }
   },
+  
+  get_all_orders: async () => {
+    try {
+      const response = await axios.get(`${server_prefix}/api/sales/get_all_orders`);
+      if (response.status == 200) set({ all_orders: response.data.orders });
+    } catch (error) {
+      console.log(error);
+      toast.error("error fetching orders");
+      return null;
+    }
+  },
 
   onPaymentComplete: async (order_id) => {
     try {
-      const response = await axios.post(`/api/store/mark_payment/${order_id}`);
+      const response = await axios.post(`${server_prefix}/api/sales/mark_payment/${order_id}`);
       if (response.status == 200) {
         set({refresh_order: order_id});
         return response.data.message;
@@ -60,7 +80,7 @@ export const useOrderHooks = create((set, get) => ({
 
     try {
       set({ isLoading: true });
-      const response = await axios.get("/api/store/get_orders");
+      const response = await axios.get(`${server_prefix}/api/sales/get_orders`);
       if (response.status == 200) {
         set({ allOrders: response.data.record });
 
@@ -80,7 +100,7 @@ export const useOrderHooks = create((set, get) => ({
 
     try {
       set({ isLoading: true });
-      const response = await axios.get(`/api/store/view_order/${order_id}`);
+      const response = await axios.get(`${server_prefix}/api/sales/view_order/${order_id}`);
       set({ isLoading: false });
 
       if (response.status == 200) {

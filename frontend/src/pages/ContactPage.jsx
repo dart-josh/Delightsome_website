@@ -50,7 +50,7 @@ const ContactPage = ({path}) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `/api/store/send_contact_mail`,
+        `/api/sales/send_contact_mail`,
         details,
       );
       setIsLoading(false);

@@ -10,7 +10,7 @@ import { Loader } from "lucide-react";
 import RelatedProducts from "../components/RelatedProducts.jsx";
 import MetaWrap from "../utils/MetaWrap";
 
-const DropReviewPage = ({path}) => {
+const DropReviewPage = ({ path }) => {
   const { setCurrentPage } = usePageHooks();
 
   // Set current page
@@ -21,28 +21,30 @@ const DropReviewPage = ({path}) => {
 
   return (
     <MetaWrap path={path}>
-    <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
-      {/* Top bar */}
-      <div className="hidden md:block">
-        <div className="text-md mb-6 flex justify-between">
-          <div className="flex gap-3">
-            <Link to="/">Home</Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-400">Review</span>
+      <div className="xs:px-1 xs:mx-5 relative mx-4 mb-32 max-w-[1200px] justify-center pt-5 sm:px-5 md:mx-auto">
+        {/* Top bar */}
+        <div className="hidden md:block">
+          <div className="text-md mb-6 flex justify-between">
+            <div className="flex gap-3">
+              <Link to="/">Home</Link>
+              <span className="text-gray-400">/</span>
+              <Link to="/reviews">Reviews</Link>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-400">Review</span>
+            </div>
           </div>
+
+          {/* Page Title */}
+          <div className="mb-8 text-2xl font-bold">Review</div>
         </div>
 
-        {/* Page Title */}
-        <div className="mb-8 text-2xl font-bold">Review</div>
-      </div>
+        <div className="flex w-full flex-col justify-center gap-x-40 gap-y-12 lg:flex-row">
+          <FormBox />
 
-      <div className="flex w-full flex-col justify-center gap-x-40 gap-y-12 lg:flex-row">
-        <FormBox />
-
-        {/* Related products */}
-        <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} />
+          {/* Related products */}
+          <RelatedProducts additionalClasses={"max-w-full lg:w-[300px]"} />
+        </div>
       </div>
-    </div>
     </MetaWrap>
   );
 };
@@ -87,7 +89,7 @@ const FormBox = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post("api/store/drop_review", reviewData);
+      const response = await axios.post("api/sales/drop_review", reviewData);
       setIsLoading(false);
       if (response.status === 200) {
         toast.success("Order Sent", { toastId: "success_1" });
