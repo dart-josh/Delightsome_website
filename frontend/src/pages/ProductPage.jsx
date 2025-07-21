@@ -30,6 +30,7 @@ import { useOrderHooks } from "../Hooks/useOrderHooks";
 import MetaWrap from "../utils/MetaWrap";
 import { fetch_image } from "../Hooks/serveruploader";
 import ReactMarkdown from "react-markdown";
+import { useAuthStore } from "../store/authStore";
 
 const ProductPage = ({ path }) => {
   const { id: link } = useParams();
@@ -42,6 +43,8 @@ const ProductPage = ({ path }) => {
     updateCart,
     removeFromCart,
   } = useProductStore();
+
+  const {user} = useAuthStore();
 
   const [product, setProduct] = useState();
 
@@ -107,7 +110,7 @@ const ProductPage = ({ path }) => {
       link: product.link,
     };
 
-    updateCart(cartP);
+    updateCart(user?._id, cartP);
   };
 
   // increaae quantity
@@ -121,7 +124,7 @@ const ProductPage = ({ path }) => {
       setItemQty(itemQty - 1);
     } else {
       if (isAddedToCart) {
-        removeFromCart(product.id);
+        removeFromCart(user?._id, product.id);
       }
     }
   };
@@ -279,7 +282,7 @@ const ProductPage = ({ path }) => {
 
                     <Heart
                       size={20}
-                      onClick={() => updateLikedProducts(product.id)}
+                      onClick={() => updateLikedProducts(user?._id, product.id)}
                       className={`cursor-pointer transition-all duration-300 hover:scale-110 ${isLiked ? "fill-red-500 stroke-red-500" : "stroke-gray-500"}`}
                     />
                   </div>
@@ -316,7 +319,7 @@ const ProductPage = ({ path }) => {
                         !isAddedToCart
                           ? () => addToCart(itemQty)
                           : () => {
-                              removeFromCart(product.id);
+                              removeFromCart(user?._id, product.id);
                             }
                       }
                       className={`flex h-12 w-full items-center justify-center gap-3 rounded-md px-4 py-2 text-xl text-white transition-all duration-500 ${!isAddedToCart ? "bg-green-700 hover:bg-green-800" : "bg-red-500 hover:bg-red-700"}`}

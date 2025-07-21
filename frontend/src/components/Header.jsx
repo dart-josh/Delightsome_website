@@ -12,7 +12,7 @@ import {
   ShoppingCart,
   Minus,
   Plus,
-  Delete,
+  Trash2,
 } from "lucide-react";
 import { useSidebarHooks, usePageHooks } from "../Hooks/useGeneralHooks";
 import { useEffect, useRef, useState } from "react";
@@ -627,6 +627,8 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
 
   const [totalCartPrice, setTotalCartPrice] = useState(0);
 
+  const {user} = useAuthStore();
+
   useEffect(() => {
     let total = 0;
     for (let index = 0; index < cartProducts.length; index++) {
@@ -641,7 +643,7 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item) {
       item.qty += 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 
@@ -650,7 +652,7 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item && item.qty > 1) {
       item.qty -= 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 
@@ -730,9 +732,9 @@ const CartArea = ({ cartAreaOpen, setCartAreaOpen, cartRef }) => {
                       </div>
                     </div>
 
-                    <Delete
+                    <Trash2
                       className="cursor-pointer"
-                      onClick={() => removeFromCart(id)}
+                      onClick={() => removeFromCart(user?._id, id)}
                     />
                   </div>
                 </div>

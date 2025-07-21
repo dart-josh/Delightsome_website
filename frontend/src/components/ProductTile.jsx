@@ -8,6 +8,7 @@ import { useProductStore } from "../Hooks/useProductStore";
 import { Link } from "react-router-dom";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { fetch_image } from "../Hooks/serveruploader";
+import { useAuthStore } from "../store/authStore";
 
 const ProductTile = ({ product, tile_type, admin }) => {
   // LIST
@@ -78,6 +79,7 @@ const Image = ({
   admin,
 }) => {
   const { likedProducts, updateLikedProducts } = useProductStore();
+  const {user} = useAuthStore();
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -108,7 +110,7 @@ const Image = ({
         <div className="absolute bottom-0 left-0 hidden h-0 w-full items-center justify-around overflow-hidden bg-white transition-all duration-300 group-hover:h-11 md:flex">
           <div
             className="flex cursor-pointer flex-col items-center text-[13px]"
-            onClick={() => updateLikedProducts(product.id)}
+            onClick={() => updateLikedProducts(user?._id, product.id)}
           >
             <Heart
               size={20}
@@ -133,7 +135,7 @@ const Image = ({
             className={
               "cursor-pointer" + (isLiked ? " fill-red-500 stroke-red-500" : "")
             }
-            onClick={() => updateLikedProducts(product.id)}
+            onClick={() => updateLikedProducts(user?._id, product.id)}
           />
         </div>
       )}
@@ -154,6 +156,7 @@ const Image = ({
 // BUTTON
 const AddToCartButton = ({ product }) => {
   const { cartProducts, updateCart, removeFromCart } = useProductStore();
+  const {user} = useAuthStore();
 
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [itemQty, setItemQty] = useState(1);
@@ -187,7 +190,7 @@ const AddToCartButton = ({ product }) => {
       link: product.link,
     };
 
-    updateCart(cartP);
+    updateCart(user?._id, cartP);
   };
 
   const increaseItemQty = () => {
@@ -198,7 +201,7 @@ const AddToCartButton = ({ product }) => {
     if (itemQty > 1) {
       setItemQty(itemQty - 1);
     } else {
-      removeFromCart(product.id);
+      removeFromCart(user?._id, product.id);
     }
   };
 

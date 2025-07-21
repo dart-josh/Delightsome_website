@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { fetch_image } from "../Hooks/serveruploader";
 import ReactMarkdown from "react-markdown";
+import { useAuthStore } from "../store/authStore";
 
 const ProductQuickView = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -31,6 +32,7 @@ const ProductQuickView = () => {
   const [isOpen, setIsOpen] = useState(productQuickViewOpen);
 
   const navigate = useNavigate();
+  const {user} = useAuthStore();
 
   const {
     likedProducts,
@@ -104,7 +106,7 @@ const ProductQuickView = () => {
       link: quickViewProduct.link,
     };
 
-    updateCart(cartP);
+    updateCart(user?._id, cartP);
   };
 
   // increaae quantity
@@ -118,7 +120,7 @@ const ProductQuickView = () => {
       setItemQty(itemQty - 1);
     } else {
       if (isAddedToCart) {
-        removeFromCart(quickViewProduct.id);
+        removeFromCart(user?._id, quickViewProduct.id);
       }
     }
   };
@@ -232,7 +234,7 @@ const ProductQuickView = () => {
 
                   <Heart
                     size={20}
-                    onClick={() => updateLikedProducts(quickViewProduct.id)}
+                    onClick={() => updateLikedProducts(user?._id, quickViewProduct.id)}
                     className={`cursor-pointer transition-all duration-300 hover:scale-110 ${isLiked ? "fill-red-500 stroke-red-500" : "stroke-gray-500"}`}
                   />
                 </div>
@@ -278,7 +280,7 @@ const ProductQuickView = () => {
                   <button
                     onClick={
                       isAddedToCart
-                        ? () => removeFromCart(quickViewProduct.id)
+                        ? () => removeFromCart(user?._id, quickViewProduct.id)
                         : () => addToCart(itemQty)
                     }
                     className={`mt-3 flex h-12 w-full max-w-[250px] items-center justify-center gap-3 rounded-md px-4 py-2 text-xl text-white transition-all duration-500 md:mt-5 md:max-w-full ${isAddedToCart ? "bg-red-500 hover:bg-red-700" : "bg-green-700 hover:bg-green-800"}`}
@@ -315,7 +317,7 @@ const ProductQuickView = () => {
             <div
               onClick={
                 isAddedToCart
-                  ? () => removeFromCart(quickViewProduct.id)
+                  ? () => removeFromCart(user?._id, quickViewProduct.id)
                   : () => addToCart(itemQty)
               }
               className={`flex h-full w-full cursor-pointer items-center justify-center gap-2 text-white transition-all duration-500 ${isAddedToCart ? "bg-red-500 hover:bg-red-700" : "bg-green-700 hover:bg-green-800"}`}

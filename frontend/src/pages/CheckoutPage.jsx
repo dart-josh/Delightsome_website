@@ -106,6 +106,7 @@ const CheckoutPage = ({path}) => {
       customerEmail: email.current.value,
       shortNote: note.current.value,
       deliveryMethod: deliveryMethod,
+      userId: user?._id,
     };
 
     setIsLoading(true);
@@ -413,12 +414,13 @@ const OrderDetails = ({
   isLoading,
 }) => {
   const { cartProducts, updateCart } = useProductStore();
+  const {user} = useAuthStore();
 
   const increaseItemQty = (itemId) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item) {
       item.qty += 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 
@@ -427,7 +429,7 @@ const OrderDetails = ({
     const item = cartProducts.find((item) => item.id === itemId);
     if (item && item.qty > 1) {
       item.qty -= 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 

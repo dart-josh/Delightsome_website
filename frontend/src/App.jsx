@@ -34,6 +34,9 @@ import ForgotPasswordPage from "./authPages/ForgotPasswordPage";
 import ResetPasswordPage from "./authPages/ResetPasswordPage";
 import UserProfile from "./authPages/UserProfile";
 import OrderList from "./adminPages/OrderList";
+import Wishlist from "./pages/Wishlist";
+import Orders from "./pages/Orders";
+import SupportChatBot from "./pages/SupportChatBot";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -75,7 +78,7 @@ const AdminProtectedRoute = ({ children }) => {
   }
 
   if (!user?.isAdmin) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -98,8 +101,13 @@ const RedirectAuthenticatedUser = ({ children }) => {
 
 function App() {
   const location = useLocation();
-  const { updateProductList, updateFeaturedProducts, productList } =
-    useProductStore();
+  const {
+    updateProductList,
+    updateFeaturedProducts,
+    productList,
+    fetchLikedProducts,
+    fetchCartProducts,
+  } = useProductStore();
 
   useEffect(() => {
     updateProductList();
@@ -114,6 +122,18 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (user?.likedProducts) {
+      fetchLikedProducts(user.likedProducts);
+    }
+
+    if (user?.cartProducts) {
+      fetchCartProducts(user?.cartProducts);
+    }
+  }, [user]);
+
+  
 
   if (isCheckingAuth) return <LoadingSpinner />;
 
@@ -149,6 +169,8 @@ function App() {
           <Route path="/track-order" element={<TrackOrderPage path="/" />} />
           <Route path="/reviews" element={<ReviewPage path="/" />} />
           <Route path="/drop-review" element={<DropReviewPage path="/" />} />
+          <Route path="/wishlist" element={<Wishlist path='/' />} />
+          <Route path="/orders" element={<Orders path='/' />} />
 
           <Route path="/faq" element={<Page404 path="/faq" />} />
           <Route path="/articles" element={<Page404 path="/articles" />} />
@@ -249,6 +271,7 @@ function App() {
       </div>
 
       <Toaster />
+      <SupportChatBot />
     </div>
   );
 }

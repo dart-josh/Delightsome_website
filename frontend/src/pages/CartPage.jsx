@@ -2,14 +2,16 @@
 import { Link } from "react-router-dom";
 import { useProductStore } from "../Hooks/useProductStore";
 import { useEffect, useState } from "react";
-import { Delete, Minus, Plus } from "lucide-react";
+import { Trash2, Minus, Plus } from "lucide-react";
 import { usePageHooks } from "../Hooks/useGeneralHooks";
 import MetaWrap from "../utils/MetaWrap";
 import { fetch_image } from "../Hooks/serveruploader";
+import { useAuthStore } from "../store/authStore";
 
 const CartPage = ({ path }) => {
   const { cartProducts, updateCart, removeFromCart } = useProductStore();
   const { setCurrentPage } = usePageHooks();
+  const {user} = useAuthStore();
 
   const [totalCartPrice, setTotalCartPrice] = useState(0);
 
@@ -27,7 +29,7 @@ const CartPage = ({ path }) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item) {
       item.qty += 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 
@@ -36,7 +38,7 @@ const CartPage = ({ path }) => {
     const item = cartProducts.find((item) => item.id === itemId);
     if (item && item.qty > 1) {
       item.qty -= 1;
-      updateCart(item);
+      updateCart(user?._id, item);
     }
   };
 
@@ -129,9 +131,9 @@ const CartPage = ({ path }) => {
                           </div>
                         </div>
 
-                        <Delete
+                        <Trash2
                           className="cursor-pointer"
-                          onClick={() => removeFromCart(id)}
+                          onClick={() => removeFromCart(user?._id, id)}
                         />
                       </div>
 
@@ -173,9 +175,9 @@ const CartPage = ({ path }) => {
                                 </button>
                               </div>
 
-                              <Delete
+                              <Trash2
                                 className="cursor-pointer"
-                                onClick={() => removeFromCart(id)}
+                                onClick={() => removeFromCart(user?._id, id)}
                               />
                             </div>
                           </div>

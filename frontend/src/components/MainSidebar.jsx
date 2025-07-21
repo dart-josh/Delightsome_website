@@ -86,25 +86,21 @@ const MainSidebar = () => {
 
   const who_we_are_list = [
     {
-      name: "Track order",
-      link: "/track-order",
-    },
-    {
-      name: "My account",
-      link: "/myaccount",
-    },
-    {
       name: "About Us",
       link: "/about",
+    },
+    {
+      name: "Track order",
+      link: "/track-order",
     },
     {
       name: "My Orders",
       link: "/orders",
     },
-    // {
-    //   name: "Wishlist",
-    //   link: "/wishlist",
-    // },
+    {
+      name: "My account",
+      link: "/myaccount",
+    },
     {
       name: "Reviews",
       link: "/reviews",

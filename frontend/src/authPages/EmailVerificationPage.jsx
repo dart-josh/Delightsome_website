@@ -9,7 +9,9 @@ const EmailVerificationPage = () => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
 
-  const { error, isLoading, verifyEmail, logout } = useAuthStore();
+  const { error, isLoading, verifyEmail, resendEmail, user, logout } = useAuthStore();
+
+  const [hideResend, setHideResend] = useState(false);
 
   const handleChange = (index, value) => {
     const newCode = [...code];
@@ -50,6 +52,19 @@ const EmailVerificationPage = () => {
       await verifyEmail(verificationCode);
       navigate("/shop");
       toast.success("Email verified successfully", { id: "tlf" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleResend = async () => {
+    if (isLoading || hideResend) return;
+    try {
+      setCode(["", "", "", "", "", ""]);
+
+      await resendEmail(user.email);
+      setHideResend(true);
+      toast.success("Email Sent successfully", { id: "tlf" });
     } catch (error) {
       console.log(error);
     }
@@ -104,6 +119,15 @@ const EmailVerificationPage = () => {
             {isLoading ? "Verifying..." : "Verify Email"}
           </motion.button>
         </form>
+
+        <div className="flex justify-start bg-opacity-50 px-8 py-4">
+          <div
+            onClick={handleResend}
+            className={hideResend ? 'cursor-not-allowed text-gray-600' : `font-semibold cursor-pointer text-green-600 hover:underline`}
+          >
+            {isLoading ? '...' : hideResend ? 'Verification code sent' : 'Resend verification code'}
+          </div>
+        </div>
 
         <div className="flex justify-center bg-opacity-50 px-8 py-4">
           <div

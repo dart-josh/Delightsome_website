@@ -10,7 +10,12 @@ export const get_products = async () => {
   try {
     const response = await axios.get(`${server_prefix}/store/get_products`);
 
-    const products = response?.data != null ? response.data.map((p) => {return {...p, id: p._id}}) : [];
+    const products =
+      response?.data != null
+        ? response.data.map((p) => {
+            return { ...p, id: p._id };
+          })
+        : [];
 
     return products;
   } catch (error) {
@@ -111,7 +116,7 @@ const transformProducts = (originalProducts) => {
     name: product.name,
     price: product.price,
     category: product.category,
-    tag: product.tag.split(' ').join(', '),
+    tag: product.tag.split(" ").join(", "),
     productCode: product.productCode,
     images: product.images || ["/products/placeholder.png"],
     thumbnails: product.thumbnails || ["/products/placeholder-160x160.png"],
@@ -128,3 +133,18 @@ const transformProducts = (originalProducts) => {
     isAvailable: true,
   }));
 };
+
+export const likeProduct = (userId, productId) => {
+  axios.post(`${server_prefix}/user/likeProduct`, {
+    id: userId,
+    likedProduct: productId,
+  });
+};
+
+export const updateCart = (userId, cart) => {
+  axios.post(`${server_prefix}/user/updateCart`, {
+    id: userId,
+    cartProducts: cart,
+  });
+
+}

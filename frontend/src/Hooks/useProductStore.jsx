@@ -1,13 +1,62 @@
 import { create } from "zustand";
-import { get_products } from "./serverHooks";
+import { get_products, likeProduct, updateCart } from "./serverHooks";
 
 export const useProductStore = create((set, get) => ({
   productList: [],
   updateProductList: async () => {
-    const products = await get_products();
-    console.log('Store updated')
+    if (get().productList && get().productList.length > 0) return;
 
-    set({productList: products});
+    const products = await get_products();
+
+    if (products && products.length > 0) {
+      console.log("Store updated");
+      set({ productList: products });
+    }
+  },
+
+  fetchLikedProducts: async (likedProducts) => {
+    set({ likedProducts });
+  },
+
+  fetchCartProducts: async (cartP) => {
+    let cart = [];
+    const products = get().productList;
+
+    for (let index = 0; index < cartP.length; index++) {
+      const element = cartP[index];
+      const p = products.find((p) => p._id == element.id);
+      p.qty = element.qty;
+      if (p) {
+        cart = [...cart, p];
+      }
+    }
+
+    const cartProducts = cart.map((c) => {
+      return {
+        name: c.name,
+        price: c.price,
+        image: c.images[0],
+        id: c.id,
+        qty: c.qty,
+      };
+    });
+
+    if (cartProducts.length > 0) set({ cartProducts });
+  },
+
+  getLikedProductFromProduct: (likedProducts) => {
+    let likes = [];
+    const products = get().productList;
+
+    for (let index = 0; index < likedProducts.length; index++) {
+      const element = likedProducts[index];
+      const p = products.find((p) => p._id == element);
+      if (p) {
+        likes = [...likes, p];
+      }
+    }
+
+    return likes;
   },
 
   likedProducts: [],
@@ -74,44 +123,80 @@ export const useProductStore = create((set, get) => ({
   },
 
   // update like product
-  updateLikedProducts: (productId) =>
+  updateLikedProducts: (userId, productId) => {
     set((state) => {
       if (state.likedProducts.includes(productId))
         return {
           likedProducts: state.likedProducts.filter((p) => p !== productId),
         };
       else return { likedProducts: [...state.likedProducts, productId] };
-    }),
+    });
+
+    if (userId) {
+      likeProduct(userId, productId);
+    }
+  },
 
   // add/update cart
-  updateCart: (product) =>
+  updateCart: (userId, product) => {
     set((state) => {
       const cart_Product = state.cartProducts.filter(
         (p) => p.id === product.id,
       )[0];
+
       if (cart_Product) {
         const pi = state.cartProducts.findIndex((p) => p.id === product.id);
         state.cartProducts[pi] = product;
 
         return { cartProducts: [...state.cartProducts] };
       } else return { cartProducts: [...state.cartProducts, product] };
-    }),
+    });
+
+    const cartProducts = get().cartProducts;
+    if (userId) {
+      const finalCart = cartProducts.map((c) => {
+        return { id: c.id, qty: c.qty };
+      });
+
+      updateCart(userId, finalCart);
+    }
+  },
 
   // remove from cart
-  removeFromCart: (productId) =>
+  removeFromCart: (userId, productId) => {
     set((state) => {
       return {
         cartProducts: state.cartProducts.filter((p) => p.id !== productId),
       };
-    }),
+    });
+
+    const cartProducts = get().cartProducts;
+    if (userId) {
+      const finalCart = cartProducts.map((c) => {
+        return { id: c.id, qty: c.qty };
+      });
+
+      updateCart(userId, finalCart);
+    }
+  },
 
   // clear cart
-  clearCart: () =>
+  clearCart: (userId) => {
     set(() => {
       return {
         cartProducts: [],
       };
-    }),
+    });
+
+    const cartProducts = get().cartProducts;
+    if (userId) {
+      const finalCart = cartProducts.map((c) => {
+        return { id: c.id, qty: c.qty };
+      });
+
+      updateCart(userId, finalCart);
+    }
+  },
 
   // Shuffle list
   shuffleList: (list) => {

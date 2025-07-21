@@ -7,6 +7,7 @@ import { useOrderHooks } from "../Hooks/useOrderHooks";
 import { Container, Copy, Loader, Store } from "lucide-react";
 import toast from "react-hot-toast";
 import MetaWrap from "../utils/MetaWrap";
+import { useAuthStore } from "../store/authStore";
 
 const ViewOrderPage = ({ path }) => {
   const { setCurrentPage } = usePageHooks();
@@ -14,6 +15,7 @@ const ViewOrderPage = ({ path }) => {
   const { getOrderDetails, refresh_order } = useOrderHooks();
 
   const { formatDate, formatAmount } = useGeneralHooks();
+  const {user} = useAuthStore();
 
   let { order_id } = useParams();
   const [searchParams] = useSearchParams();
@@ -43,11 +45,12 @@ const ViewOrderPage = ({ path }) => {
     setCurrentPage("Order Details");
 
     if (status === "true") {
-      clearCart();
+      clearCart(user?._id);
     }
 
     // scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearCart, getOrderDetails, order_id, setCurrentPage, status]);
 
   return (
